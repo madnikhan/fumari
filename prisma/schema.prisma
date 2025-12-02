@@ -65,12 +65,14 @@ model Table {
   sectionId   String
   status      String   @default("available") // available, occupied, reserved, cleaning
   currentGuests Int    @default(0)
+  qrCode      String?  @unique // QR code token for buzzer system
   
   section     Section  @relation(fields: [sectionId], references: [id])
   reservations Reservation[]
   orders      Order[]
   assignedWaiterId String?
   assignedWaiter Staff? @relation(fields: [assignedWaiterId], references: [id])
+  buzzerRequests BuzzerRequest[]
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -147,11 +149,13 @@ model Order {
   staff         Staff    @relation(fields: [staffId], references: [id])
   status        String   @default("pending") // pending, preparing, ready, served, completed, cancelled
   orderType     String   @default("dine_in") // dine_in, takeaway, delivery
-  subtotal      Float    @default(0)
-  tax           Float    @default(0)
+  subtotal      Float    @default(0) // Subtotal before VAT
+  vatRate       Float    @default(20.0) // VAT rate percentage (20% UK standard)
+  vatAmount     Float    @default(0) // VAT amount
+  tax           Float    @default(0) // Legacy field (keeping for compatibility)
   serviceCharge Float    @default(0)
   discount      Float    @default(0)
-  total         Float    @default(0)
+  total         Float    @default(0) // Total including VAT
   notes         String?
   
   items         OrderItem[]
@@ -198,4 +202,163 @@ model Payment {
   
   @@index([orderId])
   @@index([status])
+}
+
+// Buzzer requests from customers
+model BuzzerRequest {
+  id            String   @id @default(cuid())
+  tableId       String
+  table         Table    @relation(fields: [tableId], references: [id])
+  requestType   String   // waiter, food, shisha, bill, service
+  status        String   @default("pending") // pending, acknowledged, completed
+  acknowledgedBy String? // Staff ID who acknowledged
+  acknowledgedAt DateTime?
+  completedAt   DateTime?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([tableId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([requestType])
+}
+
+// Suppliers (for purchase management)
+model Supplier {
+  id          String   @id @default(cuid())
+  name        String
+  vatNumber   String?  // UK VAT registration number
+  address     String?
+  phone       String?
+  email       String?
+  contactName String?
+  active      Boolean  @default(true)
+  
+  purchases   Purchase[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([name])
+  @@index([vatNumber])
+}
+
+// Purchases (expenses, stock, etc.)
+model Purchase {
+  id            String   @id @default(cuid())
+  supplierId    String
+  supplier      Supplier @relation(fields: [supplierId], references: [id])
+  invoiceNumber String?
+  date          DateTime
+  category      String   // stock, equipment, utilities, rent, other
+  description   String?
+  subtotal      Float    // Amount before VAT
+  vatRate       Float    @default(20.0) // VAT rate percentage
+  vatAmount     Float    // VAT amount
+  total         Float    // Total including VAT
+  notes         String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([supplierId])
+  @@index([date])
+  @@index([category])
+}
+
+// VAT Rates configuration
+model VATRate {
+  id          String   @id @default(cuid())
+  rate        Float    // 20.0, 0.0, etc.
+  name        String   // "Standard", "Zero-rated", "Exempt"
+  description String?
+  active      Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([rate])
+}
+
+// Tax Periods (quarters for VAT returns)
+model TaxPeriod {
+  id          String   @id @default(cuid())
+  startDate   DateTime
+  endDate     DateTime
+  quarter     Int      // 1, 2, 3, 4
+  year        Int
+  status      String   @default("open") // open, closed, submitted
+  notes       String?
+  
+  vatReturns VATReturn[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([startDate])
+  @@index([endDate])
+  @@index([year, quarter])
+}
+
+// VAT Returns (quarterly submissions)
+model VATReturn {
+  id          String   @id @default(cuid())
+  taxPeriodId String
+  taxPeriod   TaxPeriod @relation(fields: [taxPeriodId], references: [id])
+  outputVAT   Float    @default(0) // VAT on sales (output VAT)
+  inputVAT    Float    @default(0) // VAT on purchases (input VAT)
+  vatDue      Float    @default(0) // Output VAT - Input VAT
+  submittedAt DateTime?
+  submittedBy String?  // User ID who submitted
+  notes       String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([taxPeriodId])
+  @@index([submittedAt])
+}
+
+// Accounting Settings (VAT registration, company info, etc.)
+model AccountingSettings {
+  id                String   @id @default(cuid())
+  vatRegistrationNumber String?  // UK VAT registration number (e.g., GB123456789)
+  companyName       String?
+  companyAddress    String?
+  companyPhone      String?
+  companyEmail      String?
+  accountingYearStart Int     @default(1) // Month (1-12) when accounting year starts
+  standardVATRate   Float    @default(20.0) // Standard VAT rate percentage
+  zeroRatedVATRate  Float    @default(0.0) // Zero-rated VAT rate
+  exemptVATRate     Float    @default(0.0) // Exempt VAT rate
+  serviceChargeRate Float    @default(10.0) // Service charge percentage
+  currency          String   @default("GBP")
+  currencySymbol    String   @default("£")
+  
+  updatedBy         String?  // User ID who last updated
+  updatedAt         DateTime @updatedAt
+  createdAt         DateTime @default(now())
+  
+  @@unique([id])
+}
+
+// Audit Trail (for HMRC compliance - track all changes)
+model AuditLog {
+  id          String   @id @default(cuid())
+  entityType  String   // "Order", "Purchase", "VATReturn", etc.
+  entityId    String   // ID of the entity
+  action      String   // "create", "update", "delete", "submit"
+  userId      String?  // User who performed the action
+  userName    String?  // User name for reference
+  changes     String?  // JSON string of changes
+  ipAddress   String?
+  userAgent   String?
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([createdAt])
+  @@index([action])
 }

@@ -13,6 +13,13 @@ if (!process.env.DATABASE_URL && process.env.NODE_ENV !== 'production') {
   process.env.DATABASE_URL = `file:${dbPath}`
 }
 
+// Ensure absolute path for SQLite
+if (process.env.DATABASE_URL?.startsWith('file:./')) {
+  const relativePath = process.env.DATABASE_URL.replace('file:', '')
+  const absolutePath = path.join(process.cwd(), relativePath)
+  process.env.DATABASE_URL = `file:${absolutePath}`
+}
+
 // Validate DATABASE_URL in production
 if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL environment variable is required in production')

@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ChefHat, Lock, User, Eye, EyeOff } from 'lucide-react';
+import { Lock, User, Eye, EyeOff } from 'lucide-react';
 import { showToast } from '@/components/Toast';
+import FumariLogo from '@/components/FumariLogo';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -76,38 +77,36 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#212226] flex items-center justify-center p-4 pb-20">
       <div className="w-full max-w-md">
         {/* Logo and Title */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="bg-[#800020] p-4 rounded-full border-4 border-[#D4AF37]">
-              <ChefHat className="w-12 h-12 text-[#D4AF37]" />
-            </div>
+            <FumariLogo size="large" />
           </div>
-          <h1 className="text-4xl font-bold text-[#D4AF37] mb-2">Fumari Restaurant</h1>
-          <p className="text-gray-300">Management System</p>
+          <h1 className="text-4xl font-bold text-[#FFE176] mb-2">Fumari Restaurant</h1>
+          <p className="text-[#E5E5E5]">Management System</p>
         </div>
 
         {/* Login Form */}
-        <div className="bg-[#1a1a1a] rounded-lg shadow-2xl p-8 border-2 border-[#800020]">
-          <h2 className="text-2xl font-bold text-[#D4AF37] mb-6 text-center">Login</h2>
+        <div className="bg-[#2A2B2F] rounded-lg shadow-2xl p-8 border-2 border-[#9B4E3F]">
+          <h2 className="text-2xl font-bold text-[#FFE176] mb-6 text-center">Login</h2>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Username Field */}
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="username" className="block text-sm font-medium text-[#E5E5E5] mb-2">
                 Username or Email
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#E5E5E5]" />
                 <input
                   id="username"
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
-                  className="w-full pl-10 pr-4 py-3 bg-black border-2 border-[#800020] rounded-lg text-white focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-colors"
+                  className="w-full pl-10 pr-4 py-3 bg-[#212226] border-2 border-[#9B4E3F] rounded-lg text-white focus:ring-2 focus:ring-[#FFE176] focus:border-[#FFE176] transition-colors"
                   placeholder="Enter your username or email"
                   autoComplete="username"
                 />
@@ -116,25 +115,25 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-[#E5E5E5] mb-2">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#E5E5E5]" />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full pl-10 pr-12 py-3 bg-black border-2 border-[#800020] rounded-lg text-white focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-colors"
+                  className="w-full pl-10 pr-12 py-3 bg-[#212226] border-2 border-[#9B4E3F] rounded-lg text-white focus:ring-2 focus:ring-[#FFE176] focus:border-[#FFE176] transition-colors"
                   placeholder="Enter your password"
                   autoComplete="current-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E5E5E5] hover:text-white transition-colors"
                 >
                   {showPassword ? (
                     <EyeOff className="w-5 h-5" />
@@ -149,7 +148,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-4 py-3 bg-[#D4AF37] text-black rounded-lg hover:bg-[#f4c430] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-bold text-lg"
+              className="w-full px-4 py-3 bg-[#FFE176] text-[#212226] rounded-lg hover:bg-[#E6C966] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-bold text-lg"
             >
               {loading ? 'Logging in...' : 'Login'}
             </button>
@@ -157,7 +156,7 @@ export default function LoginPage() {
 
           {/* Footer */}
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-[#E5E5E5]">
               Birmingham, UK • Turkish Cuisine & Shisha Bar
             </p>
           </div>
@@ -165,9 +164,9 @@ export default function LoginPage() {
 
         {/* Default Credentials Info (for development) */}
         {process.env.NODE_ENV === 'development' && (
-          <div className="mt-6 bg-[#1a1a1a] rounded-lg p-4 border-2 border-[#800020]">
-            <p className="text-xs text-gray-400 text-center">
-              Default credentials: <span className="text-[#D4AF37]">admin / admin123</span>
+          <div className="mt-6 bg-[#2A2B2F] rounded-lg p-4 border-2 border-[#9B4E3F]">
+            <p className="text-xs text-[#E5E5E5] text-center">
+              Default credentials: <span className="text-[#FFE176]">admin / admin123</span>
             </p>
           </div>
         )}

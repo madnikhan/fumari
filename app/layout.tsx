@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ToastContainer } from "@/components/Toast";
 import InstallPrompt from "@/components/InstallPrompt";
+import DemoTrademark from "@/components/DemoTrademark";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
   title: "Fumari Restaurant Management System",
   description: "Complete restaurant management system for large-scale operations",
   manifest: "/manifest.json",
-  themeColor: "#800020",
+  themeColor: "#9B4E3F",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -46,6 +47,7 @@ export default function RootLayout({
         {children}
         <ToastContainer />
         <InstallPrompt />
+        <DemoTrademark />
       </body>
     </html>
   );

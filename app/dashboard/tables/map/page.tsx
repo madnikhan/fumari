@@ -146,11 +146,12 @@ export default function TableMapPage() {
     const rightCount = 5;
 
     const margin = 2; // 2% margin from edges
-    const gapToBar = 1; // Reduced gap between tables and bar (1% instead of default)
+    const gapToBar = 4; // Gap between tables and bar area (4% for proper spacing)
+    const topGapToBar = 6; // Extra space below top tables (1-20) - more space between them and bar
     let tableIndex = 0;
 
     // Top area: 20 tables arranged in 2 rows × 10 columns, perfectly centered
-    // Position them closer to the bar to reduce gap
+    // Position them with more space below
     const topTables = sortedTables.slice(tableIndex, tableIndex + topCount);
     const topCols = 10; // 10 columns for 20 tables (2 rows)
     const topRows = 2;
@@ -158,9 +159,9 @@ export default function TableMapPage() {
     const topAreaWidth = 100 - (2 * margin);
     const topTableAreaWidth = topCols * totalCellSize;
     const topStartX = (topAreaWidth - topTableAreaWidth) / 2 + margin;
-    // Position top tables closer to the bar - calculate from bar top minus table area height minus gap
+    // Position top tables with more space below - calculate from bar top minus table area height minus gap
     const topTableAreaHeight = topRows * totalCellSize;
-    const topStartY = centerBarY - topTableAreaHeight - gapToBar;
+    const topStartY = centerBarY - topTableAreaHeight - topGapToBar;
     
     topTables.forEach((table, i) => {
       const col = i % topCols;

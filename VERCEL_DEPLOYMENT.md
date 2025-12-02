@@ -9,19 +9,27 @@ This guide will help you deploy the Fumari Restaurant Management System to Verce
 
 ## Step 1: Set Up PostgreSQL Database
 
-**Option A: Vercel Postgres (Recommended)**
+**Option A: Supabase (Recommended - Free & Easy)**
+
+1. Go to [supabase.com](https://supabase.com) and sign up
+2. Create a new project
+3. Go to **Settings** → **Database** → Copy connection string
+4. Add `?sslmode=require` to the connection string
+5. See [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) for detailed instructions
+
+**Option B: Vercel Postgres**
 
 1. In your Vercel project dashboard, go to **Storage** tab
 2. Click **Create Database** → Select **Postgres**
 3. Choose a name and region
 4. Copy the `POSTGRES_PRISMA_URL` or `DATABASE_URL` connection string
 
-**Option B: External PostgreSQL**
+**Option C: Other External PostgreSQL**
 
 Use services like:
 - [Railway](https://railway.app) - Free tier available
-- [Supabase](https://supabase.com) - Free tier available
 - [Neon](https://neon.tech) - Free tier available
+- [Render](https://render.com) - Free tier available
 
 ## Step 2: Update Prisma Schema for PostgreSQL
 

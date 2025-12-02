@@ -44,15 +44,15 @@ function ToastItem({ toast, onClose }: ToastProps) {
   const getColors = () => {
     switch (toast.type) {
       case 'success':
-        return 'bg-[#1a4d2e] border-[#2d7a4f] text-white';
+        return 'bg-[#1B4527] border-[#215632] text-white';
       case 'error':
-        return 'bg-[#800020] border-[#a00028] text-white';
+        return 'bg-[#9B4E3F] border-[#B85E4F] text-white';
       case 'warning':
-        return 'bg-[#D4AF37] border-[#f4c430] text-black';
+        return 'bg-[#FFE176] border-[#E6C966] text-[#212226]';
       case 'info':
-        return 'bg-[#4a5568] border-[#6b7280] text-white';
+        return 'bg-[#2A2B2F] border-[#9B4E3F] text-white';
       default:
-        return 'bg-[#4a5568] border-[#6b7280] text-white';
+        return 'bg-[#2A2B2F] border-[#9B4E3F] text-white';
     }
   };
 

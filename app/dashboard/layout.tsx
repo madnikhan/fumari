@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
-import { Home, Utensils, Calendar, Menu, BarChart3, Users, ChefHat, Monitor, X, Menu as MenuIcon, LogOut, User as UserIcon } from "lucide-react";
+import { Home, Utensils, Calendar, Menu, BarChart3, Users, Monitor, X, Menu as MenuIcon, LogOut, User as UserIcon, Bell, Receipt, Building2, Maximize, Minimize } from "lucide-react";
+import FumariLogo from '@/components/FumariLogo';
 import { showToast } from '@/components/Toast';
 
 export default function DashboardLayout({
@@ -14,11 +15,70 @@ export default function DashboardLayout({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<{ username: string; role: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     checkSession();
+    checkFullscreen();
+    
+    // Listen for fullscreen changes
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+    
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+    };
   }, []);
+  
+  const checkFullscreen = () => {
+    setIsFullscreen(
+      !!document.fullscreenElement ||
+      !!(document as any).webkitFullscreenElement ||
+      !!(document as any).mozFullScreenElement ||
+      !!(document as any).msFullscreenElement
+    );
+  };
+  
+  const toggleFullscreen = async () => {
+    try {
+      if (!isFullscreen) {
+        // Enter fullscreen
+        if (document.documentElement.requestFullscreen) {
+          await document.documentElement.requestFullscreen();
+        } else if ((document.documentElement as any).webkitRequestFullscreen) {
+          await (document.documentElement as any).webkitRequestFullscreen();
+        } else if ((document.documentElement as any).mozRequestFullScreen) {
+          await (document.documentElement as any).mozRequestFullScreen();
+        } else if ((document.documentElement as any).msRequestFullscreen) {
+          await (document.documentElement as any).msRequestFullscreen();
+        }
+      } else {
+        // Exit fullscreen
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if ((document as any).webkitExitFullscreen) {
+          await (document as any).webkitExitFullscreen();
+        } else if ((document as any).mozCancelFullScreen) {
+          await (document as any).mozCancelFullScreen();
+        } else if ((document as any).msExitFullscreen) {
+          await (document as any).msExitFullscreen();
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling fullscreen:', error);
+      showToast('Failed to toggle fullscreen', 'error');
+    }
+  };
 
   const checkSession = async () => {
     try {
@@ -59,8 +119,8 @@ export default function DashboardLayout({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-[#D4AF37] text-xl">Loading...</div>
+      <div className="min-h-screen bg-[#212226] flex items-center justify-center">
+        <div className="text-[#FFE176] text-xl">Loading...</div>
       </div>
     );
   }
@@ -70,52 +130,45 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-black">
-      <nav className="bg-[#800020] border-b-2 border-[#D4AF37] shadow-lg">
+    <div className="min-h-screen bg-[#212226]">
+      <nav className="bg-[#9B4E3F] border-b-2 border-[#FFE176] shadow-lg">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            <Link href="/dashboard/tables" className="flex items-center space-x-2">
-              <ChefHat className="w-8 h-8 text-[#D4AF37]" />
+            <Link href="/dashboard" className="flex items-center space-x-2">
+              <FumariLogo size="small" />
               <span className="text-xl font-bold text-white">Fumari</span>
             </Link>
             
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-1">
-              <NavLink href="/dashboard/tables" icon={<Utensils className="w-4 h-4" />}>
-                Tables
-              </NavLink>
-              <NavLink href="/dashboard/reservations" icon={<Calendar className="w-4 h-4" />}>
-                Reservations
-              </NavLink>
-              <NavLink href="/dashboard/orders" icon={<Menu className="w-4 h-4" />}>
-                Orders
-              </NavLink>
-              <NavLink href="/dashboard/menu" icon={<Menu className="w-4 h-4" />}>
-                Menu
-              </NavLink>
-              <NavLink href="/dashboard/kitchen" icon={<ChefHat className="w-4 h-4" />}>
-                Kitchen
-              </NavLink>
-              <NavLink href="/dashboard/analytics" icon={<BarChart3 className="w-4 h-4" />}>
-                Analytics
-              </NavLink>
-              <NavLink href="/dashboard/staff" icon={<Users className="w-4 h-4" />}>
-                Staff
-              </NavLink>
-              <NavLink href="/dashboard/kiosk" icon={<Monitor className="w-4 h-4" />}>
-                Kiosk
+              <NavLink href="/dashboard" icon={<Home className="w-4 h-4" />}>
+                Dashboard
               </NavLink>
               
+              {/* Fullscreen Button */}
+              <button
+                onClick={toggleFullscreen}
+                className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-[#7A3E32] hover:text-[#FFE176] transition-colors"
+                title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+              >
+                {isFullscreen ? (
+                  <Minimize className="w-4 h-4" />
+                ) : (
+                  <Maximize className="w-4 h-4" />
+                )}
+                <span className="hidden xl:inline">{isFullscreen ? 'Exit' : 'Fullscreen'}</span>
+              </button>
+              
               {/* User Info & Logout */}
-              <div className="ml-4 pl-4 border-l border-[#600018] flex items-center space-x-3">
+              <div className="ml-4 pl-4 border-l border-[#7A3E32] flex items-center space-x-3">
                 <div className="flex items-center space-x-2 text-sm">
-                  <UserIcon className="w-4 h-4 text-[#D4AF37]" />
+                  <UserIcon className="w-4 h-4 text-[#FFE176]" />
                   <span className="text-white">{user.username}</span>
-                  <span className="text-gray-300">({user.role})</span>
+                  <span className="text-[#E5E5E5]">({user.role})</span>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-[#600018] hover:text-[#D4AF37] transition-colors"
+                  className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-[#7A3E32] hover:text-[#FFE176] transition-colors"
                   title="Logout"
                 >
                   <LogOut className="w-4 h-4" />
@@ -127,14 +180,14 @@ export default function DashboardLayout({
             {/* Mobile Menu Button */}
             <div className="lg:hidden flex items-center space-x-2">
               {user && (
-                <div className="flex items-center space-x-1 text-xs text-gray-300 mr-2">
+                <div className="flex items-center space-x-1 text-xs text-[#E5E5E5] mr-2">
                   <UserIcon className="w-4 h-4" />
                   <span>{user.username}</span>
                 </div>
               )}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 text-white hover:bg-[#600018] rounded-md transition-colors"
+                className="p-2 text-white hover:bg-[#7A3E32] rounded-md transition-colors"
                 aria-label="Toggle menu"
               >
                 {mobileMenuOpen ? (
@@ -148,32 +201,27 @@ export default function DashboardLayout({
 
           {/* Mobile Navigation */}
           {mobileMenuOpen && (
-            <div className="lg:hidden pb-4 border-t border-[#600018] mt-2 pt-4">
+            <div className="lg:hidden pb-4 border-t border-[#7A3E32] mt-2 pt-4">
               <div className="flex flex-col space-y-1">
-                <MobileNavLink href="/dashboard/tables" icon={<Utensils className="w-5 h-5" />} onClick={() => setMobileMenuOpen(false)}>
-                  Tables
+                <MobileNavLink href="/dashboard" icon={<Home className="w-5 h-5" />} onClick={() => setMobileMenuOpen(false)}>
+                  Dashboard
                 </MobileNavLink>
-                <MobileNavLink href="/dashboard/reservations" icon={<Calendar className="w-5 h-5" />} onClick={() => setMobileMenuOpen(false)}>
-                  Reservations
-                </MobileNavLink>
-                <MobileNavLink href="/dashboard/orders" icon={<Menu className="w-5 h-5" />} onClick={() => setMobileMenuOpen(false)}>
-                  Orders
-                </MobileNavLink>
-                <MobileNavLink href="/dashboard/menu" icon={<Menu className="w-5 h-5" />} onClick={() => setMobileMenuOpen(false)}>
-                  Menu
-                </MobileNavLink>
-                <MobileNavLink href="/dashboard/kitchen" icon={<ChefHat className="w-5 h-5" />} onClick={() => setMobileMenuOpen(false)}>
-                  Kitchen
-                </MobileNavLink>
-                <MobileNavLink href="/dashboard/analytics" icon={<BarChart3 className="w-5 h-5" />} onClick={() => setMobileMenuOpen(false)}>
-                  Analytics
-                </MobileNavLink>
-                <MobileNavLink href="/dashboard/staff" icon={<Users className="w-5 h-5" />} onClick={() => setMobileMenuOpen(false)}>
-                  Staff
-                </MobileNavLink>
-                <MobileNavLink href="/dashboard/kiosk" icon={<Monitor className="w-5 h-5" />} onClick={() => setMobileMenuOpen(false)}>
-                  Kiosk Mode
-                </MobileNavLink>
+                
+                {/* Mobile Fullscreen Button */}
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    toggleFullscreen();
+                  }}
+                  className="flex items-center space-x-3 px-4 py-3 rounded-md text-base font-medium text-white hover:bg-[#7A3E32] hover:text-[#FFE176] transition-colors"
+                >
+                  {isFullscreen ? (
+                    <Minimize className="w-5 h-5" />
+                  ) : (
+                    <Maximize className="w-5 h-5" />
+                  )}
+                  <span>{isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}</span>
+                </button>
                 
                 {/* Mobile Logout */}
                 <button
@@ -181,7 +229,7 @@ export default function DashboardLayout({
                     setMobileMenuOpen(false);
                     handleLogout();
                   }}
-                  className="flex items-center space-x-3 px-4 py-3 rounded-md text-base font-medium text-white hover:bg-[#600018] hover:text-[#D4AF37] transition-colors border-t border-[#600018] mt-2 pt-3"
+                  className="flex items-center space-x-3 px-4 py-3 rounded-md text-base font-medium text-white hover:bg-[#7A3E32] hover:text-[#FFE176] transition-colors border-t border-[#7A3E32] mt-2 pt-3"
                 >
                   <LogOut className="w-5 h-5" />
                   <span>Logout</span>
@@ -191,7 +239,7 @@ export default function DashboardLayout({
           )}
         </div>
       </nav>
-      <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+      <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 pb-16">
         {children}
       </main>
     </div>
@@ -206,7 +254,7 @@ function NavLink({ href, icon, children }: {
   return (
     <Link
       href={href}
-      className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-[#600018] hover:text-[#D4AF37] transition-colors"
+      className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-[#7A3E32] hover:text-[#FFE176] transition-colors"
     >
       {icon}
       <span>{children}</span>
@@ -224,7 +272,7 @@ function MobileNavLink({ href, icon, children, onClick }: {
     <Link
       href={href}
       onClick={onClick}
-      className="flex items-center space-x-3 px-4 py-3 rounded-md text-base font-medium text-white hover:bg-[#600018] hover:text-[#D4AF37] transition-colors"
+      className="flex items-center space-x-3 px-4 py-3 rounded-md text-base font-medium text-white hover:bg-[#7A3E32] hover:text-[#FFE176] transition-colors"
     >
       {icon}
       <span>{children}</span>

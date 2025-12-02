@@ -45,6 +45,7 @@ export type TableMinAggregateOutputType = {
   sectionId: string | null
   status: string | null
   currentGuests: number | null
+  qrCode: string | null
   assignedWaiterId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -57,6 +58,7 @@ export type TableMaxAggregateOutputType = {
   sectionId: string | null
   status: string | null
   currentGuests: number | null
+  qrCode: string | null
   assignedWaiterId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -69,6 +71,7 @@ export type TableCountAggregateOutputType = {
   sectionId: number
   status: number
   currentGuests: number
+  qrCode: number
   assignedWaiterId: number
   createdAt: number
   updatedAt: number
@@ -95,6 +98,7 @@ export type TableMinAggregateInputType = {
   sectionId?: true
   status?: true
   currentGuests?: true
+  qrCode?: true
   assignedWaiterId?: true
   createdAt?: true
   updatedAt?: true
@@ -107,6 +111,7 @@ export type TableMaxAggregateInputType = {
   sectionId?: true
   status?: true
   currentGuests?: true
+  qrCode?: true
   assignedWaiterId?: true
   createdAt?: true
   updatedAt?: true
@@ -119,6 +124,7 @@ export type TableCountAggregateInputType = {
   sectionId?: true
   status?: true
   currentGuests?: true
+  qrCode?: true
   assignedWaiterId?: true
   createdAt?: true
   updatedAt?: true
@@ -218,6 +224,7 @@ export type TableGroupByOutputType = {
   sectionId: string
   status: string
   currentGuests: number
+  qrCode: string | null
   assignedWaiterId: string | null
   createdAt: Date
   updatedAt: Date
@@ -253,6 +260,7 @@ export type TableWhereInput = {
   sectionId?: Prisma.StringFilter<"Table"> | string
   status?: Prisma.StringFilter<"Table"> | string
   currentGuests?: Prisma.IntFilter<"Table"> | number
+  qrCode?: Prisma.StringNullableFilter<"Table"> | string | null
   assignedWaiterId?: Prisma.StringNullableFilter<"Table"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Table"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Table"> | Date | string
@@ -260,6 +268,7 @@ export type TableWhereInput = {
   reservations?: Prisma.ReservationListRelationFilter
   orders?: Prisma.OrderListRelationFilter
   assignedWaiter?: Prisma.XOR<Prisma.StaffNullableScalarRelationFilter, Prisma.StaffWhereInput> | null
+  buzzerRequests?: Prisma.BuzzerRequestListRelationFilter
 }
 
 export type TableOrderByWithRelationInput = {
@@ -269,6 +278,7 @@ export type TableOrderByWithRelationInput = {
   sectionId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   currentGuests?: Prisma.SortOrder
+  qrCode?: Prisma.SortOrderInput | Prisma.SortOrder
   assignedWaiterId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -276,11 +286,13 @@ export type TableOrderByWithRelationInput = {
   reservations?: Prisma.ReservationOrderByRelationAggregateInput
   orders?: Prisma.OrderOrderByRelationAggregateInput
   assignedWaiter?: Prisma.StaffOrderByWithRelationInput
+  buzzerRequests?: Prisma.BuzzerRequestOrderByRelationAggregateInput
 }
 
 export type TableWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   number?: number
+  qrCode?: string
   AND?: Prisma.TableWhereInput | Prisma.TableWhereInput[]
   OR?: Prisma.TableWhereInput[]
   NOT?: Prisma.TableWhereInput | Prisma.TableWhereInput[]
@@ -295,7 +307,8 @@ export type TableWhereUniqueInput = Prisma.AtLeast<{
   reservations?: Prisma.ReservationListRelationFilter
   orders?: Prisma.OrderListRelationFilter
   assignedWaiter?: Prisma.XOR<Prisma.StaffNullableScalarRelationFilter, Prisma.StaffWhereInput> | null
-}, "id" | "number">
+  buzzerRequests?: Prisma.BuzzerRequestListRelationFilter
+}, "id" | "number" | "qrCode">
 
 export type TableOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -304,6 +317,7 @@ export type TableOrderByWithAggregationInput = {
   sectionId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   currentGuests?: Prisma.SortOrder
+  qrCode?: Prisma.SortOrderInput | Prisma.SortOrder
   assignedWaiterId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -324,6 +338,7 @@ export type TableScalarWhereWithAggregatesInput = {
   sectionId?: Prisma.StringWithAggregatesFilter<"Table"> | string
   status?: Prisma.StringWithAggregatesFilter<"Table"> | string
   currentGuests?: Prisma.IntWithAggregatesFilter<"Table"> | number
+  qrCode?: Prisma.StringNullableWithAggregatesFilter<"Table"> | string | null
   assignedWaiterId?: Prisma.StringNullableWithAggregatesFilter<"Table"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Table"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Table"> | Date | string
@@ -335,12 +350,14 @@ export type TableCreateInput = {
   capacity: number
   status?: string
   currentGuests?: number
+  qrCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   section: Prisma.SectionCreateNestedOneWithoutTablesInput
   reservations?: Prisma.ReservationCreateNestedManyWithoutTableInput
   orders?: Prisma.OrderCreateNestedManyWithoutTableInput
   assignedWaiter?: Prisma.StaffCreateNestedOneWithoutAssignedTablesInput
+  buzzerRequests?: Prisma.BuzzerRequestCreateNestedManyWithoutTableInput
 }
 
 export type TableUncheckedCreateInput = {
@@ -350,11 +367,13 @@ export type TableUncheckedCreateInput = {
   sectionId: string
   status?: string
   currentGuests?: number
+  qrCode?: string | null
   assignedWaiterId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   reservations?: Prisma.ReservationUncheckedCreateNestedManyWithoutTableInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutTableInput
+  buzzerRequests?: Prisma.BuzzerRequestUncheckedCreateNestedManyWithoutTableInput
 }
 
 export type TableUpdateInput = {
@@ -363,12 +382,14 @@ export type TableUpdateInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentGuests?: Prisma.IntFieldUpdateOperationsInput | number
+  qrCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   section?: Prisma.SectionUpdateOneRequiredWithoutTablesNestedInput
   reservations?: Prisma.ReservationUpdateManyWithoutTableNestedInput
   orders?: Prisma.OrderUpdateManyWithoutTableNestedInput
   assignedWaiter?: Prisma.StaffUpdateOneWithoutAssignedTablesNestedInput
+  buzzerRequests?: Prisma.BuzzerRequestUpdateManyWithoutTableNestedInput
 }
 
 export type TableUncheckedUpdateInput = {
@@ -378,11 +399,13 @@ export type TableUncheckedUpdateInput = {
   sectionId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentGuests?: Prisma.IntFieldUpdateOperationsInput | number
+  qrCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedWaiterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reservations?: Prisma.ReservationUncheckedUpdateManyWithoutTableNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutTableNestedInput
+  buzzerRequests?: Prisma.BuzzerRequestUncheckedUpdateManyWithoutTableNestedInput
 }
 
 export type TableCreateManyInput = {
@@ -392,6 +415,7 @@ export type TableCreateManyInput = {
   sectionId: string
   status?: string
   currentGuests?: number
+  qrCode?: string | null
   assignedWaiterId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -403,6 +427,7 @@ export type TableUpdateManyMutationInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentGuests?: Prisma.IntFieldUpdateOperationsInput | number
+  qrCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -414,6 +439,7 @@ export type TableUncheckedUpdateManyInput = {
   sectionId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentGuests?: Prisma.IntFieldUpdateOperationsInput | number
+  qrCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedWaiterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -436,6 +462,7 @@ export type TableCountOrderByAggregateInput = {
   sectionId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   currentGuests?: Prisma.SortOrder
+  qrCode?: Prisma.SortOrder
   assignedWaiterId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -454,6 +481,7 @@ export type TableMaxOrderByAggregateInput = {
   sectionId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   currentGuests?: Prisma.SortOrder
+  qrCode?: Prisma.SortOrder
   assignedWaiterId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -466,6 +494,7 @@ export type TableMinOrderByAggregateInput = {
   sectionId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   currentGuests?: Prisma.SortOrder
+  qrCode?: Prisma.SortOrder
   assignedWaiterId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -601,17 +630,33 @@ export type TableUpdateOneRequiredWithoutOrdersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TableUpdateToOneWithWhereWithoutOrdersInput, Prisma.TableUpdateWithoutOrdersInput>, Prisma.TableUncheckedUpdateWithoutOrdersInput>
 }
 
+export type TableCreateNestedOneWithoutBuzzerRequestsInput = {
+  create?: Prisma.XOR<Prisma.TableCreateWithoutBuzzerRequestsInput, Prisma.TableUncheckedCreateWithoutBuzzerRequestsInput>
+  connectOrCreate?: Prisma.TableCreateOrConnectWithoutBuzzerRequestsInput
+  connect?: Prisma.TableWhereUniqueInput
+}
+
+export type TableUpdateOneRequiredWithoutBuzzerRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.TableCreateWithoutBuzzerRequestsInput, Prisma.TableUncheckedCreateWithoutBuzzerRequestsInput>
+  connectOrCreate?: Prisma.TableCreateOrConnectWithoutBuzzerRequestsInput
+  upsert?: Prisma.TableUpsertWithoutBuzzerRequestsInput
+  connect?: Prisma.TableWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TableUpdateToOneWithWhereWithoutBuzzerRequestsInput, Prisma.TableUpdateWithoutBuzzerRequestsInput>, Prisma.TableUncheckedUpdateWithoutBuzzerRequestsInput>
+}
+
 export type TableCreateWithoutAssignedWaiterInput = {
   id?: string
   number: number
   capacity: number
   status?: string
   currentGuests?: number
+  qrCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   section: Prisma.SectionCreateNestedOneWithoutTablesInput
   reservations?: Prisma.ReservationCreateNestedManyWithoutTableInput
   orders?: Prisma.OrderCreateNestedManyWithoutTableInput
+  buzzerRequests?: Prisma.BuzzerRequestCreateNestedManyWithoutTableInput
 }
 
 export type TableUncheckedCreateWithoutAssignedWaiterInput = {
@@ -621,10 +666,12 @@ export type TableUncheckedCreateWithoutAssignedWaiterInput = {
   sectionId: string
   status?: string
   currentGuests?: number
+  qrCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   reservations?: Prisma.ReservationUncheckedCreateNestedManyWithoutTableInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutTableInput
+  buzzerRequests?: Prisma.BuzzerRequestUncheckedCreateNestedManyWithoutTableInput
 }
 
 export type TableCreateOrConnectWithoutAssignedWaiterInput = {
@@ -662,6 +709,7 @@ export type TableScalarWhereInput = {
   sectionId?: Prisma.StringFilter<"Table"> | string
   status?: Prisma.StringFilter<"Table"> | string
   currentGuests?: Prisma.IntFilter<"Table"> | number
+  qrCode?: Prisma.StringNullableFilter<"Table"> | string | null
   assignedWaiterId?: Prisma.StringNullableFilter<"Table"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Table"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Table"> | Date | string
@@ -673,11 +721,13 @@ export type TableCreateWithoutSectionInput = {
   capacity: number
   status?: string
   currentGuests?: number
+  qrCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   reservations?: Prisma.ReservationCreateNestedManyWithoutTableInput
   orders?: Prisma.OrderCreateNestedManyWithoutTableInput
   assignedWaiter?: Prisma.StaffCreateNestedOneWithoutAssignedTablesInput
+  buzzerRequests?: Prisma.BuzzerRequestCreateNestedManyWithoutTableInput
 }
 
 export type TableUncheckedCreateWithoutSectionInput = {
@@ -686,11 +736,13 @@ export type TableUncheckedCreateWithoutSectionInput = {
   capacity: number
   status?: string
   currentGuests?: number
+  qrCode?: string | null
   assignedWaiterId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   reservations?: Prisma.ReservationUncheckedCreateNestedManyWithoutTableInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutTableInput
+  buzzerRequests?: Prisma.BuzzerRequestUncheckedCreateNestedManyWithoutTableInput
 }
 
 export type TableCreateOrConnectWithoutSectionInput = {
@@ -724,11 +776,13 @@ export type TableCreateWithoutReservationsInput = {
   capacity: number
   status?: string
   currentGuests?: number
+  qrCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   section: Prisma.SectionCreateNestedOneWithoutTablesInput
   orders?: Prisma.OrderCreateNestedManyWithoutTableInput
   assignedWaiter?: Prisma.StaffCreateNestedOneWithoutAssignedTablesInput
+  buzzerRequests?: Prisma.BuzzerRequestCreateNestedManyWithoutTableInput
 }
 
 export type TableUncheckedCreateWithoutReservationsInput = {
@@ -738,10 +792,12 @@ export type TableUncheckedCreateWithoutReservationsInput = {
   sectionId: string
   status?: string
   currentGuests?: number
+  qrCode?: string | null
   assignedWaiterId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutTableInput
+  buzzerRequests?: Prisma.BuzzerRequestUncheckedCreateNestedManyWithoutTableInput
 }
 
 export type TableCreateOrConnectWithoutReservationsInput = {
@@ -766,11 +822,13 @@ export type TableUpdateWithoutReservationsInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentGuests?: Prisma.IntFieldUpdateOperationsInput | number
+  qrCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   section?: Prisma.SectionUpdateOneRequiredWithoutTablesNestedInput
   orders?: Prisma.OrderUpdateManyWithoutTableNestedInput
   assignedWaiter?: Prisma.StaffUpdateOneWithoutAssignedTablesNestedInput
+  buzzerRequests?: Prisma.BuzzerRequestUpdateManyWithoutTableNestedInput
 }
 
 export type TableUncheckedUpdateWithoutReservationsInput = {
@@ -780,10 +838,12 @@ export type TableUncheckedUpdateWithoutReservationsInput = {
   sectionId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentGuests?: Prisma.IntFieldUpdateOperationsInput | number
+  qrCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedWaiterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orders?: Prisma.OrderUncheckedUpdateManyWithoutTableNestedInput
+  buzzerRequests?: Prisma.BuzzerRequestUncheckedUpdateManyWithoutTableNestedInput
 }
 
 export type TableCreateWithoutOrdersInput = {
@@ -792,11 +852,13 @@ export type TableCreateWithoutOrdersInput = {
   capacity: number
   status?: string
   currentGuests?: number
+  qrCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   section: Prisma.SectionCreateNestedOneWithoutTablesInput
   reservations?: Prisma.ReservationCreateNestedManyWithoutTableInput
   assignedWaiter?: Prisma.StaffCreateNestedOneWithoutAssignedTablesInput
+  buzzerRequests?: Prisma.BuzzerRequestCreateNestedManyWithoutTableInput
 }
 
 export type TableUncheckedCreateWithoutOrdersInput = {
@@ -806,10 +868,12 @@ export type TableUncheckedCreateWithoutOrdersInput = {
   sectionId: string
   status?: string
   currentGuests?: number
+  qrCode?: string | null
   assignedWaiterId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   reservations?: Prisma.ReservationUncheckedCreateNestedManyWithoutTableInput
+  buzzerRequests?: Prisma.BuzzerRequestUncheckedCreateNestedManyWithoutTableInput
 }
 
 export type TableCreateOrConnectWithoutOrdersInput = {
@@ -834,11 +898,13 @@ export type TableUpdateWithoutOrdersInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentGuests?: Prisma.IntFieldUpdateOperationsInput | number
+  qrCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   section?: Prisma.SectionUpdateOneRequiredWithoutTablesNestedInput
   reservations?: Prisma.ReservationUpdateManyWithoutTableNestedInput
   assignedWaiter?: Prisma.StaffUpdateOneWithoutAssignedTablesNestedInput
+  buzzerRequests?: Prisma.BuzzerRequestUpdateManyWithoutTableNestedInput
 }
 
 export type TableUncheckedUpdateWithoutOrdersInput = {
@@ -848,10 +914,88 @@ export type TableUncheckedUpdateWithoutOrdersInput = {
   sectionId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentGuests?: Prisma.IntFieldUpdateOperationsInput | number
+  qrCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedWaiterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reservations?: Prisma.ReservationUncheckedUpdateManyWithoutTableNestedInput
+  buzzerRequests?: Prisma.BuzzerRequestUncheckedUpdateManyWithoutTableNestedInput
+}
+
+export type TableCreateWithoutBuzzerRequestsInput = {
+  id?: string
+  number: number
+  capacity: number
+  status?: string
+  currentGuests?: number
+  qrCode?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  section: Prisma.SectionCreateNestedOneWithoutTablesInput
+  reservations?: Prisma.ReservationCreateNestedManyWithoutTableInput
+  orders?: Prisma.OrderCreateNestedManyWithoutTableInput
+  assignedWaiter?: Prisma.StaffCreateNestedOneWithoutAssignedTablesInput
+}
+
+export type TableUncheckedCreateWithoutBuzzerRequestsInput = {
+  id?: string
+  number: number
+  capacity: number
+  sectionId: string
+  status?: string
+  currentGuests?: number
+  qrCode?: string | null
+  assignedWaiterId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reservations?: Prisma.ReservationUncheckedCreateNestedManyWithoutTableInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutTableInput
+}
+
+export type TableCreateOrConnectWithoutBuzzerRequestsInput = {
+  where: Prisma.TableWhereUniqueInput
+  create: Prisma.XOR<Prisma.TableCreateWithoutBuzzerRequestsInput, Prisma.TableUncheckedCreateWithoutBuzzerRequestsInput>
+}
+
+export type TableUpsertWithoutBuzzerRequestsInput = {
+  update: Prisma.XOR<Prisma.TableUpdateWithoutBuzzerRequestsInput, Prisma.TableUncheckedUpdateWithoutBuzzerRequestsInput>
+  create: Prisma.XOR<Prisma.TableCreateWithoutBuzzerRequestsInput, Prisma.TableUncheckedCreateWithoutBuzzerRequestsInput>
+  where?: Prisma.TableWhereInput
+}
+
+export type TableUpdateToOneWithWhereWithoutBuzzerRequestsInput = {
+  where?: Prisma.TableWhereInput
+  data: Prisma.XOR<Prisma.TableUpdateWithoutBuzzerRequestsInput, Prisma.TableUncheckedUpdateWithoutBuzzerRequestsInput>
+}
+
+export type TableUpdateWithoutBuzzerRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.IntFieldUpdateOperationsInput | number
+  capacity?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  currentGuests?: Prisma.IntFieldUpdateOperationsInput | number
+  qrCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  section?: Prisma.SectionUpdateOneRequiredWithoutTablesNestedInput
+  reservations?: Prisma.ReservationUpdateManyWithoutTableNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutTableNestedInput
+  assignedWaiter?: Prisma.StaffUpdateOneWithoutAssignedTablesNestedInput
+}
+
+export type TableUncheckedUpdateWithoutBuzzerRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.IntFieldUpdateOperationsInput | number
+  capacity?: Prisma.IntFieldUpdateOperationsInput | number
+  sectionId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  currentGuests?: Prisma.IntFieldUpdateOperationsInput | number
+  qrCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  assignedWaiterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reservations?: Prisma.ReservationUncheckedUpdateManyWithoutTableNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutTableNestedInput
 }
 
 export type TableCreateManyAssignedWaiterInput = {
@@ -861,6 +1005,7 @@ export type TableCreateManyAssignedWaiterInput = {
   sectionId: string
   status?: string
   currentGuests?: number
+  qrCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -871,11 +1016,13 @@ export type TableUpdateWithoutAssignedWaiterInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentGuests?: Prisma.IntFieldUpdateOperationsInput | number
+  qrCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   section?: Prisma.SectionUpdateOneRequiredWithoutTablesNestedInput
   reservations?: Prisma.ReservationUpdateManyWithoutTableNestedInput
   orders?: Prisma.OrderUpdateManyWithoutTableNestedInput
+  buzzerRequests?: Prisma.BuzzerRequestUpdateManyWithoutTableNestedInput
 }
 
 export type TableUncheckedUpdateWithoutAssignedWaiterInput = {
@@ -885,10 +1032,12 @@ export type TableUncheckedUpdateWithoutAssignedWaiterInput = {
   sectionId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentGuests?: Prisma.IntFieldUpdateOperationsInput | number
+  qrCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reservations?: Prisma.ReservationUncheckedUpdateManyWithoutTableNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutTableNestedInput
+  buzzerRequests?: Prisma.BuzzerRequestUncheckedUpdateManyWithoutTableNestedInput
 }
 
 export type TableUncheckedUpdateManyWithoutAssignedWaiterInput = {
@@ -898,6 +1047,7 @@ export type TableUncheckedUpdateManyWithoutAssignedWaiterInput = {
   sectionId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentGuests?: Prisma.IntFieldUpdateOperationsInput | number
+  qrCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -908,6 +1058,7 @@ export type TableCreateManySectionInput = {
   capacity: number
   status?: string
   currentGuests?: number
+  qrCode?: string | null
   assignedWaiterId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -919,11 +1070,13 @@ export type TableUpdateWithoutSectionInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentGuests?: Prisma.IntFieldUpdateOperationsInput | number
+  qrCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reservations?: Prisma.ReservationUpdateManyWithoutTableNestedInput
   orders?: Prisma.OrderUpdateManyWithoutTableNestedInput
   assignedWaiter?: Prisma.StaffUpdateOneWithoutAssignedTablesNestedInput
+  buzzerRequests?: Prisma.BuzzerRequestUpdateManyWithoutTableNestedInput
 }
 
 export type TableUncheckedUpdateWithoutSectionInput = {
@@ -932,11 +1085,13 @@ export type TableUncheckedUpdateWithoutSectionInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentGuests?: Prisma.IntFieldUpdateOperationsInput | number
+  qrCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedWaiterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reservations?: Prisma.ReservationUncheckedUpdateManyWithoutTableNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutTableNestedInput
+  buzzerRequests?: Prisma.BuzzerRequestUncheckedUpdateManyWithoutTableNestedInput
 }
 
 export type TableUncheckedUpdateManyWithoutSectionInput = {
@@ -945,6 +1100,7 @@ export type TableUncheckedUpdateManyWithoutSectionInput = {
   capacity?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentGuests?: Prisma.IntFieldUpdateOperationsInput | number
+  qrCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedWaiterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -958,11 +1114,13 @@ export type TableUncheckedUpdateManyWithoutSectionInput = {
 export type TableCountOutputType = {
   reservations: number
   orders: number
+  buzzerRequests: number
 }
 
 export type TableCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reservations?: boolean | TableCountOutputTypeCountReservationsArgs
   orders?: boolean | TableCountOutputTypeCountOrdersArgs
+  buzzerRequests?: boolean | TableCountOutputTypeCountBuzzerRequestsArgs
 }
 
 /**
@@ -989,6 +1147,13 @@ export type TableCountOutputTypeCountOrdersArgs<ExtArgs extends runtime.Types.Ex
   where?: Prisma.OrderWhereInput
 }
 
+/**
+ * TableCountOutputType without action
+ */
+export type TableCountOutputTypeCountBuzzerRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BuzzerRequestWhereInput
+}
+
 
 export type TableSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -997,6 +1162,7 @@ export type TableSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   sectionId?: boolean
   status?: boolean
   currentGuests?: boolean
+  qrCode?: boolean
   assignedWaiterId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1004,6 +1170,7 @@ export type TableSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   reservations?: boolean | Prisma.Table$reservationsArgs<ExtArgs>
   orders?: boolean | Prisma.Table$ordersArgs<ExtArgs>
   assignedWaiter?: boolean | Prisma.Table$assignedWaiterArgs<ExtArgs>
+  buzzerRequests?: boolean | Prisma.Table$buzzerRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.TableCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["table"]>
 
@@ -1014,6 +1181,7 @@ export type TableSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   sectionId?: boolean
   status?: boolean
   currentGuests?: boolean
+  qrCode?: boolean
   assignedWaiterId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1028,6 +1196,7 @@ export type TableSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   sectionId?: boolean
   status?: boolean
   currentGuests?: boolean
+  qrCode?: boolean
   assignedWaiterId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1042,17 +1211,19 @@ export type TableSelectScalar = {
   sectionId?: boolean
   status?: boolean
   currentGuests?: boolean
+  qrCode?: boolean
   assignedWaiterId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TableOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "number" | "capacity" | "sectionId" | "status" | "currentGuests" | "assignedWaiterId" | "createdAt" | "updatedAt", ExtArgs["result"]["table"]>
+export type TableOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "number" | "capacity" | "sectionId" | "status" | "currentGuests" | "qrCode" | "assignedWaiterId" | "createdAt" | "updatedAt", ExtArgs["result"]["table"]>
 export type TableInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   section?: boolean | Prisma.SectionDefaultArgs<ExtArgs>
   reservations?: boolean | Prisma.Table$reservationsArgs<ExtArgs>
   orders?: boolean | Prisma.Table$ordersArgs<ExtArgs>
   assignedWaiter?: boolean | Prisma.Table$assignedWaiterArgs<ExtArgs>
+  buzzerRequests?: boolean | Prisma.Table$buzzerRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.TableCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TableIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1071,6 +1242,7 @@ export type $TablePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     reservations: Prisma.$ReservationPayload<ExtArgs>[]
     orders: Prisma.$OrderPayload<ExtArgs>[]
     assignedWaiter: Prisma.$StaffPayload<ExtArgs> | null
+    buzzerRequests: Prisma.$BuzzerRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1079,6 +1251,7 @@ export type $TablePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     sectionId: string
     status: string
     currentGuests: number
+    qrCode: string | null
     assignedWaiterId: string | null
     createdAt: Date
     updatedAt: Date
@@ -1480,6 +1653,7 @@ export interface Prisma__TableClient<T, Null = never, ExtArgs extends runtime.Ty
   reservations<T extends Prisma.Table$reservationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Table$reservationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   orders<T extends Prisma.Table$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Table$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   assignedWaiter<T extends Prisma.Table$assignedWaiterArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Table$assignedWaiterArgs<ExtArgs>>): Prisma.Prisma__StaffClient<runtime.Types.Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  buzzerRequests<T extends Prisma.Table$buzzerRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Table$buzzerRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BuzzerRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1515,6 +1689,7 @@ export interface TableFieldRefs {
   readonly sectionId: Prisma.FieldRef<"Table", 'String'>
   readonly status: Prisma.FieldRef<"Table", 'String'>
   readonly currentGuests: Prisma.FieldRef<"Table", 'Int'>
+  readonly qrCode: Prisma.FieldRef<"Table", 'String'>
   readonly assignedWaiterId: Prisma.FieldRef<"Table", 'String'>
   readonly createdAt: Prisma.FieldRef<"Table", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Table", 'DateTime'>
@@ -1976,6 +2151,30 @@ export type Table$assignedWaiterArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   include?: Prisma.StaffInclude<ExtArgs> | null
   where?: Prisma.StaffWhereInput
+}
+
+/**
+ * Table.buzzerRequests
+ */
+export type Table$buzzerRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BuzzerRequest
+   */
+  select?: Prisma.BuzzerRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BuzzerRequest
+   */
+  omit?: Prisma.BuzzerRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BuzzerRequestInclude<ExtArgs> | null
+  where?: Prisma.BuzzerRequestWhereInput
+  orderBy?: Prisma.BuzzerRequestOrderByWithRelationInput | Prisma.BuzzerRequestOrderByWithRelationInput[]
+  cursor?: Prisma.BuzzerRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BuzzerRequestScalarFieldEnum | Prisma.BuzzerRequestScalarFieldEnum[]
 }
 
 /**

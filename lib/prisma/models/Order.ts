@@ -28,6 +28,8 @@ export type AggregateOrder = {
 
 export type OrderAvgAggregateOutputType = {
   subtotal: number | null
+  vatRate: number | null
+  vatAmount: number | null
   tax: number | null
   serviceCharge: number | null
   discount: number | null
@@ -36,6 +38,8 @@ export type OrderAvgAggregateOutputType = {
 
 export type OrderSumAggregateOutputType = {
   subtotal: number | null
+  vatRate: number | null
+  vatAmount: number | null
   tax: number | null
   serviceCharge: number | null
   discount: number | null
@@ -49,6 +53,8 @@ export type OrderMinAggregateOutputType = {
   status: string | null
   orderType: string | null
   subtotal: number | null
+  vatRate: number | null
+  vatAmount: number | null
   tax: number | null
   serviceCharge: number | null
   discount: number | null
@@ -65,6 +71,8 @@ export type OrderMaxAggregateOutputType = {
   status: string | null
   orderType: string | null
   subtotal: number | null
+  vatRate: number | null
+  vatAmount: number | null
   tax: number | null
   serviceCharge: number | null
   discount: number | null
@@ -81,6 +89,8 @@ export type OrderCountAggregateOutputType = {
   status: number
   orderType: number
   subtotal: number
+  vatRate: number
+  vatAmount: number
   tax: number
   serviceCharge: number
   discount: number
@@ -94,6 +104,8 @@ export type OrderCountAggregateOutputType = {
 
 export type OrderAvgAggregateInputType = {
   subtotal?: true
+  vatRate?: true
+  vatAmount?: true
   tax?: true
   serviceCharge?: true
   discount?: true
@@ -102,6 +114,8 @@ export type OrderAvgAggregateInputType = {
 
 export type OrderSumAggregateInputType = {
   subtotal?: true
+  vatRate?: true
+  vatAmount?: true
   tax?: true
   serviceCharge?: true
   discount?: true
@@ -115,6 +129,8 @@ export type OrderMinAggregateInputType = {
   status?: true
   orderType?: true
   subtotal?: true
+  vatRate?: true
+  vatAmount?: true
   tax?: true
   serviceCharge?: true
   discount?: true
@@ -131,6 +147,8 @@ export type OrderMaxAggregateInputType = {
   status?: true
   orderType?: true
   subtotal?: true
+  vatRate?: true
+  vatAmount?: true
   tax?: true
   serviceCharge?: true
   discount?: true
@@ -147,6 +165,8 @@ export type OrderCountAggregateInputType = {
   status?: true
   orderType?: true
   subtotal?: true
+  vatRate?: true
+  vatAmount?: true
   tax?: true
   serviceCharge?: true
   discount?: true
@@ -250,6 +270,8 @@ export type OrderGroupByOutputType = {
   status: string
   orderType: string
   subtotal: number
+  vatRate: number
+  vatAmount: number
   tax: number
   serviceCharge: number
   discount: number
@@ -289,6 +311,8 @@ export type OrderWhereInput = {
   status?: Prisma.StringFilter<"Order"> | string
   orderType?: Prisma.StringFilter<"Order"> | string
   subtotal?: Prisma.FloatFilter<"Order"> | number
+  vatRate?: Prisma.FloatFilter<"Order"> | number
+  vatAmount?: Prisma.FloatFilter<"Order"> | number
   tax?: Prisma.FloatFilter<"Order"> | number
   serviceCharge?: Prisma.FloatFilter<"Order"> | number
   discount?: Prisma.FloatFilter<"Order"> | number
@@ -309,6 +333,8 @@ export type OrderOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   orderType?: Prisma.SortOrder
   subtotal?: Prisma.SortOrder
+  vatRate?: Prisma.SortOrder
+  vatAmount?: Prisma.SortOrder
   tax?: Prisma.SortOrder
   serviceCharge?: Prisma.SortOrder
   discount?: Prisma.SortOrder
@@ -332,6 +358,8 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.StringFilter<"Order"> | string
   orderType?: Prisma.StringFilter<"Order"> | string
   subtotal?: Prisma.FloatFilter<"Order"> | number
+  vatRate?: Prisma.FloatFilter<"Order"> | number
+  vatAmount?: Prisma.FloatFilter<"Order"> | number
   tax?: Prisma.FloatFilter<"Order"> | number
   serviceCharge?: Prisma.FloatFilter<"Order"> | number
   discount?: Prisma.FloatFilter<"Order"> | number
@@ -352,6 +380,8 @@ export type OrderOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   orderType?: Prisma.SortOrder
   subtotal?: Prisma.SortOrder
+  vatRate?: Prisma.SortOrder
+  vatAmount?: Prisma.SortOrder
   tax?: Prisma.SortOrder
   serviceCharge?: Prisma.SortOrder
   discount?: Prisma.SortOrder
@@ -376,6 +406,8 @@ export type OrderScalarWhereWithAggregatesInput = {
   status?: Prisma.StringWithAggregatesFilter<"Order"> | string
   orderType?: Prisma.StringWithAggregatesFilter<"Order"> | string
   subtotal?: Prisma.FloatWithAggregatesFilter<"Order"> | number
+  vatRate?: Prisma.FloatWithAggregatesFilter<"Order"> | number
+  vatAmount?: Prisma.FloatWithAggregatesFilter<"Order"> | number
   tax?: Prisma.FloatWithAggregatesFilter<"Order"> | number
   serviceCharge?: Prisma.FloatWithAggregatesFilter<"Order"> | number
   discount?: Prisma.FloatWithAggregatesFilter<"Order"> | number
@@ -390,6 +422,8 @@ export type OrderCreateInput = {
   status?: string
   orderType?: string
   subtotal?: number
+  vatRate?: number
+  vatAmount?: number
   tax?: number
   serviceCharge?: number
   discount?: number
@@ -410,6 +444,8 @@ export type OrderUncheckedCreateInput = {
   status?: string
   orderType?: string
   subtotal?: number
+  vatRate?: number
+  vatAmount?: number
   tax?: number
   serviceCharge?: number
   discount?: number
@@ -426,6 +462,8 @@ export type OrderUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   orderType?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
   serviceCharge?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -446,6 +484,8 @@ export type OrderUncheckedUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   orderType?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
   serviceCharge?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -464,6 +504,8 @@ export type OrderCreateManyInput = {
   status?: string
   orderType?: string
   subtotal?: number
+  vatRate?: number
+  vatAmount?: number
   tax?: number
   serviceCharge?: number
   discount?: number
@@ -478,6 +520,8 @@ export type OrderUpdateManyMutationInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   orderType?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
   serviceCharge?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -494,6 +538,8 @@ export type OrderUncheckedUpdateManyInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   orderType?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
   serviceCharge?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -520,6 +566,8 @@ export type OrderCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   orderType?: Prisma.SortOrder
   subtotal?: Prisma.SortOrder
+  vatRate?: Prisma.SortOrder
+  vatAmount?: Prisma.SortOrder
   tax?: Prisma.SortOrder
   serviceCharge?: Prisma.SortOrder
   discount?: Prisma.SortOrder
@@ -531,6 +579,8 @@ export type OrderCountOrderByAggregateInput = {
 
 export type OrderAvgOrderByAggregateInput = {
   subtotal?: Prisma.SortOrder
+  vatRate?: Prisma.SortOrder
+  vatAmount?: Prisma.SortOrder
   tax?: Prisma.SortOrder
   serviceCharge?: Prisma.SortOrder
   discount?: Prisma.SortOrder
@@ -544,6 +594,8 @@ export type OrderMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   orderType?: Prisma.SortOrder
   subtotal?: Prisma.SortOrder
+  vatRate?: Prisma.SortOrder
+  vatAmount?: Prisma.SortOrder
   tax?: Prisma.SortOrder
   serviceCharge?: Prisma.SortOrder
   discount?: Prisma.SortOrder
@@ -560,6 +612,8 @@ export type OrderMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   orderType?: Prisma.SortOrder
   subtotal?: Prisma.SortOrder
+  vatRate?: Prisma.SortOrder
+  vatAmount?: Prisma.SortOrder
   tax?: Prisma.SortOrder
   serviceCharge?: Prisma.SortOrder
   discount?: Prisma.SortOrder
@@ -571,6 +625,8 @@ export type OrderMinOrderByAggregateInput = {
 
 export type OrderSumOrderByAggregateInput = {
   subtotal?: Prisma.SortOrder
+  vatRate?: Prisma.SortOrder
+  vatAmount?: Prisma.SortOrder
   tax?: Prisma.SortOrder
   serviceCharge?: Prisma.SortOrder
   discount?: Prisma.SortOrder
@@ -699,6 +755,8 @@ export type OrderCreateWithoutStaffInput = {
   status?: string
   orderType?: string
   subtotal?: number
+  vatRate?: number
+  vatAmount?: number
   tax?: number
   serviceCharge?: number
   discount?: number
@@ -717,6 +775,8 @@ export type OrderUncheckedCreateWithoutStaffInput = {
   status?: string
   orderType?: string
   subtotal?: number
+  vatRate?: number
+  vatAmount?: number
   tax?: number
   serviceCharge?: number
   discount?: number
@@ -763,6 +823,8 @@ export type OrderScalarWhereInput = {
   status?: Prisma.StringFilter<"Order"> | string
   orderType?: Prisma.StringFilter<"Order"> | string
   subtotal?: Prisma.FloatFilter<"Order"> | number
+  vatRate?: Prisma.FloatFilter<"Order"> | number
+  vatAmount?: Prisma.FloatFilter<"Order"> | number
   tax?: Prisma.FloatFilter<"Order"> | number
   serviceCharge?: Prisma.FloatFilter<"Order"> | number
   discount?: Prisma.FloatFilter<"Order"> | number
@@ -777,6 +839,8 @@ export type OrderCreateWithoutTableInput = {
   status?: string
   orderType?: string
   subtotal?: number
+  vatRate?: number
+  vatAmount?: number
   tax?: number
   serviceCharge?: number
   discount?: number
@@ -795,6 +859,8 @@ export type OrderUncheckedCreateWithoutTableInput = {
   status?: string
   orderType?: string
   subtotal?: number
+  vatRate?: number
+  vatAmount?: number
   tax?: number
   serviceCharge?: number
   discount?: number
@@ -836,6 +902,8 @@ export type OrderCreateWithoutItemsInput = {
   status?: string
   orderType?: string
   subtotal?: number
+  vatRate?: number
+  vatAmount?: number
   tax?: number
   serviceCharge?: number
   discount?: number
@@ -855,6 +923,8 @@ export type OrderUncheckedCreateWithoutItemsInput = {
   status?: string
   orderType?: string
   subtotal?: number
+  vatRate?: number
+  vatAmount?: number
   tax?: number
   serviceCharge?: number
   discount?: number
@@ -886,6 +956,8 @@ export type OrderUpdateWithoutItemsInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   orderType?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
   serviceCharge?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -905,6 +977,8 @@ export type OrderUncheckedUpdateWithoutItemsInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   orderType?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
   serviceCharge?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -920,6 +994,8 @@ export type OrderCreateWithoutPaymentsInput = {
   status?: string
   orderType?: string
   subtotal?: number
+  vatRate?: number
+  vatAmount?: number
   tax?: number
   serviceCharge?: number
   discount?: number
@@ -939,6 +1015,8 @@ export type OrderUncheckedCreateWithoutPaymentsInput = {
   status?: string
   orderType?: string
   subtotal?: number
+  vatRate?: number
+  vatAmount?: number
   tax?: number
   serviceCharge?: number
   discount?: number
@@ -970,6 +1048,8 @@ export type OrderUpdateWithoutPaymentsInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   orderType?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
   serviceCharge?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -989,6 +1069,8 @@ export type OrderUncheckedUpdateWithoutPaymentsInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   orderType?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
   serviceCharge?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1005,6 +1087,8 @@ export type OrderCreateManyStaffInput = {
   status?: string
   orderType?: string
   subtotal?: number
+  vatRate?: number
+  vatAmount?: number
   tax?: number
   serviceCharge?: number
   discount?: number
@@ -1019,6 +1103,8 @@ export type OrderUpdateWithoutStaffInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   orderType?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
   serviceCharge?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1037,6 +1123,8 @@ export type OrderUncheckedUpdateWithoutStaffInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   orderType?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
   serviceCharge?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1054,6 +1142,8 @@ export type OrderUncheckedUpdateManyWithoutStaffInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   orderType?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
   serviceCharge?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1069,6 +1159,8 @@ export type OrderCreateManyTableInput = {
   status?: string
   orderType?: string
   subtotal?: number
+  vatRate?: number
+  vatAmount?: number
   tax?: number
   serviceCharge?: number
   discount?: number
@@ -1083,6 +1175,8 @@ export type OrderUpdateWithoutTableInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   orderType?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
   serviceCharge?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1101,6 +1195,8 @@ export type OrderUncheckedUpdateWithoutTableInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   orderType?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
   serviceCharge?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1118,6 +1214,8 @@ export type OrderUncheckedUpdateManyWithoutTableInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   orderType?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  vatAmount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
   serviceCharge?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1174,6 +1272,8 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   status?: boolean
   orderType?: boolean
   subtotal?: boolean
+  vatRate?: boolean
+  vatAmount?: boolean
   tax?: boolean
   serviceCharge?: boolean
   discount?: boolean
@@ -1195,6 +1295,8 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   status?: boolean
   orderType?: boolean
   subtotal?: boolean
+  vatRate?: boolean
+  vatAmount?: boolean
   tax?: boolean
   serviceCharge?: boolean
   discount?: boolean
@@ -1213,6 +1315,8 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   status?: boolean
   orderType?: boolean
   subtotal?: boolean
+  vatRate?: boolean
+  vatAmount?: boolean
   tax?: boolean
   serviceCharge?: boolean
   discount?: boolean
@@ -1231,6 +1335,8 @@ export type OrderSelectScalar = {
   status?: boolean
   orderType?: boolean
   subtotal?: boolean
+  vatRate?: boolean
+  vatAmount?: boolean
   tax?: boolean
   serviceCharge?: boolean
   discount?: boolean
@@ -1240,7 +1346,7 @@ export type OrderSelectScalar = {
   updatedAt?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tableId" | "staffId" | "status" | "orderType" | "subtotal" | "tax" | "serviceCharge" | "discount" | "total" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tableId" | "staffId" | "status" | "orderType" | "subtotal" | "vatRate" | "vatAmount" | "tax" | "serviceCharge" | "discount" | "total" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   table?: boolean | Prisma.TableDefaultArgs<ExtArgs>
   staff?: boolean | Prisma.StaffDefaultArgs<ExtArgs>
@@ -1272,6 +1378,8 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     status: string
     orderType: string
     subtotal: number
+    vatRate: number
+    vatAmount: number
     tax: number
     serviceCharge: number
     discount: number
@@ -1712,6 +1820,8 @@ export interface OrderFieldRefs {
   readonly status: Prisma.FieldRef<"Order", 'String'>
   readonly orderType: Prisma.FieldRef<"Order", 'String'>
   readonly subtotal: Prisma.FieldRef<"Order", 'Float'>
+  readonly vatRate: Prisma.FieldRef<"Order", 'Float'>
+  readonly vatAmount: Prisma.FieldRef<"Order", 'Float'>
   readonly tax: Prisma.FieldRef<"Order", 'Float'>
   readonly serviceCharge: Prisma.FieldRef<"Order", 'Float'>
   readonly discount: Prisma.FieldRef<"Order", 'Float'>

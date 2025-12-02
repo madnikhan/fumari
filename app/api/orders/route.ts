@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma-client';
+import { calculateVAT, calculateTotalWithVAT, getStandardVATRate } from '@/lib/vat-calculations';
 
 export async function GET(request: Request) {
   try {
@@ -153,16 +154,23 @@ export async function POST(request: Request) {
       );
     }
 
-    const tax = subtotal * 0.20; // 20% UK VAT
+    // Calculate VAT (20% UK standard rate)
+    const vatRate = getStandardVATRate();
+    const vatAmount = calculateVAT(subtotal, vatRate);
     const serviceCharge = subtotal * 0.10; // 10% service charge
-    const total = subtotal + tax + serviceCharge;
+    const total = calculateTotalWithVAT(subtotal, vatRate) + serviceCharge;
+    
+    // Keep tax field for backward compatibility (same as vatAmount)
+    const tax = vatAmount;
 
     const order = await prisma.order.create({
       data: {
         tableId,
         staffId: finalStaffId,
         subtotal,
-        tax,
+        vatRate,
+        vatAmount,
+        tax, // Legacy field
         serviceCharge,
         total,
         notes,

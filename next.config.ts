@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Production optimizations
   reactStrictMode: true,
-  swcMinify: true,
+  // Note: swcMinify is enabled by default in Next.js 16, no need to specify
   
   // Security headers
   async headers() {
@@ -28,10 +28,7 @@ const nextConfig: NextConfig = {
     ];
   },
   
-  // Environment variables that should be available on the client
-  env: {
-    NODE_ENV: process.env.NODE_ENV,
-  },
+  // Note: NODE_ENV is automatically available, no need to set it in env
 };
 
 export default nextConfig;

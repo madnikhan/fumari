@@ -1,8 +1,28 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Fumari Restaurant Brand Colors */
+  --color-maroon: #9B4E3F;
+  --color-green: #1B4527;
+  --color-gold: #FFE176;
+  --color-black: #212226;
+  --color-white: #ffffff;
+  --color-cloud-grey: #E5E5E5;
+  
+  /* Darker/Lighter variants for hover states */
+  --color-maroon-dark: #7A3E32;
+  --color-maroon-light: #B85E4F;
+  --color-green-dark: #15341F;
+  --color-green-light: #215632;
+  --color-gold-dark: #E6C966;
+  --color-gold-light: #FFE88A;
+  
+  /* Background and foreground */
+  --background: #212226;
+  --foreground: #ffffff;
+  --background-secondary: #2A2B2F;
+  --text-primary: #ffffff;
+  --text-secondary: #E5E5E5;
 }
 
 @theme inline {
@@ -10,13 +30,6 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {

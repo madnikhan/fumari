@@ -58,7 +58,15 @@ export const ModelName = {
   MenuItem: 'MenuItem',
   Order: 'Order',
   OrderItem: 'OrderItem',
-  Payment: 'Payment'
+  Payment: 'Payment',
+  BuzzerRequest: 'BuzzerRequest',
+  Supplier: 'Supplier',
+  Purchase: 'Purchase',
+  VATRate: 'VATRate',
+  TaxPeriod: 'TaxPeriod',
+  VATReturn: 'VATReturn',
+  AccountingSettings: 'AccountingSettings',
+  AuditLog: 'AuditLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -121,6 +129,7 @@ export const TableScalarFieldEnum = {
   sectionId: 'sectionId',
   status: 'status',
   currentGuests: 'currentGuests',
+  qrCode: 'qrCode',
   assignedWaiterId: 'assignedWaiterId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -185,6 +194,8 @@ export const OrderScalarFieldEnum = {
   status: 'status',
   orderType: 'orderType',
   subtotal: 'subtotal',
+  vatRate: 'vatRate',
+  vatAmount: 'vatAmount',
   tax: 'tax',
   serviceCharge: 'serviceCharge',
   discount: 'discount',
@@ -223,6 +234,138 @@ export const PaymentScalarFieldEnum = {
 } as const
 
 export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
+
+
+export const BuzzerRequestScalarFieldEnum = {
+  id: 'id',
+  tableId: 'tableId',
+  requestType: 'requestType',
+  status: 'status',
+  acknowledgedBy: 'acknowledgedBy',
+  acknowledgedAt: 'acknowledgedAt',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BuzzerRequestScalarFieldEnum = (typeof BuzzerRequestScalarFieldEnum)[keyof typeof BuzzerRequestScalarFieldEnum]
+
+
+export const SupplierScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  vatNumber: 'vatNumber',
+  address: 'address',
+  phone: 'phone',
+  email: 'email',
+  contactName: 'contactName',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SupplierScalarFieldEnum = (typeof SupplierScalarFieldEnum)[keyof typeof SupplierScalarFieldEnum]
+
+
+export const PurchaseScalarFieldEnum = {
+  id: 'id',
+  supplierId: 'supplierId',
+  invoiceNumber: 'invoiceNumber',
+  date: 'date',
+  category: 'category',
+  description: 'description',
+  subtotal: 'subtotal',
+  vatRate: 'vatRate',
+  vatAmount: 'vatAmount',
+  total: 'total',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PurchaseScalarFieldEnum = (typeof PurchaseScalarFieldEnum)[keyof typeof PurchaseScalarFieldEnum]
+
+
+export const VATRateScalarFieldEnum = {
+  id: 'id',
+  rate: 'rate',
+  name: 'name',
+  description: 'description',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VATRateScalarFieldEnum = (typeof VATRateScalarFieldEnum)[keyof typeof VATRateScalarFieldEnum]
+
+
+export const TaxPeriodScalarFieldEnum = {
+  id: 'id',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  quarter: 'quarter',
+  year: 'year',
+  status: 'status',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TaxPeriodScalarFieldEnum = (typeof TaxPeriodScalarFieldEnum)[keyof typeof TaxPeriodScalarFieldEnum]
+
+
+export const VATReturnScalarFieldEnum = {
+  id: 'id',
+  taxPeriodId: 'taxPeriodId',
+  outputVAT: 'outputVAT',
+  inputVAT: 'inputVAT',
+  vatDue: 'vatDue',
+  submittedAt: 'submittedAt',
+  submittedBy: 'submittedBy',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VATReturnScalarFieldEnum = (typeof VATReturnScalarFieldEnum)[keyof typeof VATReturnScalarFieldEnum]
+
+
+export const AccountingSettingsScalarFieldEnum = {
+  id: 'id',
+  vatRegistrationNumber: 'vatRegistrationNumber',
+  companyName: 'companyName',
+  companyAddress: 'companyAddress',
+  companyPhone: 'companyPhone',
+  companyEmail: 'companyEmail',
+  accountingYearStart: 'accountingYearStart',
+  standardVATRate: 'standardVATRate',
+  zeroRatedVATRate: 'zeroRatedVATRate',
+  exemptVATRate: 'exemptVATRate',
+  serviceChargeRate: 'serviceChargeRate',
+  currency: 'currency',
+  currencySymbol: 'currencySymbol',
+  updatedBy: 'updatedBy',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AccountingSettingsScalarFieldEnum = (typeof AccountingSettingsScalarFieldEnum)[keyof typeof AccountingSettingsScalarFieldEnum]
+
+
+export const AuditLogScalarFieldEnum = {
+  id: 'id',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  action: 'action',
+  userId: 'userId',
+  userName: 'userName',
+  changes: 'changes',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
 export const SortOrder = {

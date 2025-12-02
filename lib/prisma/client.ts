@@ -94,3 +94,43 @@ export type OrderItem = Prisma.OrderItemModel
  * 
  */
 export type Payment = Prisma.PaymentModel
+/**
+ * Model BuzzerRequest
+ * 
+ */
+export type BuzzerRequest = Prisma.BuzzerRequestModel
+/**
+ * Model Supplier
+ * 
+ */
+export type Supplier = Prisma.SupplierModel
+/**
+ * Model Purchase
+ * 
+ */
+export type Purchase = Prisma.PurchaseModel
+/**
+ * Model VATRate
+ * 
+ */
+export type VATRate = Prisma.VATRateModel
+/**
+ * Model TaxPeriod
+ * 
+ */
+export type TaxPeriod = Prisma.TaxPeriodModel
+/**
+ * Model VATReturn
+ * 
+ */
+export type VATReturn = Prisma.VATReturnModel
+/**
+ * Model AccountingSettings
+ * 
+ */
+export type AccountingSettings = Prisma.AccountingSettingsModel
+/**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = Prisma.AuditLogModel

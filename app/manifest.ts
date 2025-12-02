@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Complete restaurant management system for large-scale operations',
     start_url: '/',
     display: 'standalone',
-    background_color: '#000000',
-    theme_color: '#800020',
+    background_color: '#212226',
+    theme_color: '#9B4E3F',
     orientation: 'any',
     icons: [
       {
