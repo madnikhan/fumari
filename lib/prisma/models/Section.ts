@@ -1173,6 +1173,7 @@ export type SectionCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * The data used to create many Sections.
    */
   data: Prisma.SectionCreateManyInput | Prisma.SectionCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1191,6 +1192,7 @@ export type SectionCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * The data used to create many Sections.
    */
   data: Prisma.SectionCreateManyInput | Prisma.SectionCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**

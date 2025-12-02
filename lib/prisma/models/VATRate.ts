@@ -1083,6 +1083,7 @@ export type VATRateCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * The data used to create many VATRates.
    */
   data: Prisma.VATRateCreateManyInput | Prisma.VATRateCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1101,6 +1102,7 @@ export type VATRateCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * The data used to create many VATRates.
    */
   data: Prisma.VATRateCreateManyInput | Prisma.VATRateCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**

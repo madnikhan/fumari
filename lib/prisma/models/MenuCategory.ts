@@ -1229,6 +1229,7 @@ export type MenuCategoryCreateManyArgs<ExtArgs extends runtime.Types.Extensions.
    * The data used to create many MenuCategories.
    */
   data: Prisma.MenuCategoryCreateManyInput | Prisma.MenuCategoryCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1247,6 +1248,7 @@ export type MenuCategoryCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ex
    * The data used to create many MenuCategories.
    */
   data: Prisma.MenuCategoryCreateManyInput | Prisma.MenuCategoryCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**

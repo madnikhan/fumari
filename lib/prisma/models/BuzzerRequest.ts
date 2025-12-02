@@ -480,6 +480,7 @@ export type BuzzerRequestCreateOrConnectWithoutTableInput = {
 
 export type BuzzerRequestCreateManyTableInputEnvelope = {
   data: Prisma.BuzzerRequestCreateManyTableInput | Prisma.BuzzerRequestCreateManyTableInput[]
+  skipDuplicates?: boolean
 }
 
 export type BuzzerRequestUpsertWithWhereUniqueWithoutTableInput = {
@@ -1298,6 +1299,7 @@ export type BuzzerRequestCreateManyArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many BuzzerRequests.
    */
   data: Prisma.BuzzerRequestCreateManyInput | Prisma.BuzzerRequestCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1316,6 +1318,7 @@ export type BuzzerRequestCreateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    * The data used to create many BuzzerRequests.
    */
   data: Prisma.BuzzerRequestCreateManyInput | Prisma.BuzzerRequestCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

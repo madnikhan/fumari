@@ -672,6 +672,7 @@ export type MenuItemCreateOrConnectWithoutCategoryInput = {
 
 export type MenuItemCreateManyCategoryInputEnvelope = {
   data: Prisma.MenuItemCreateManyCategoryInput | Prisma.MenuItemCreateManyCategoryInput[]
+  skipDuplicates?: boolean
 }
 
 export type MenuItemUpsertWithWhereUniqueWithoutCategoryInput = {
@@ -1651,6 +1652,7 @@ export type MenuItemCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data used to create many MenuItems.
    */
   data: Prisma.MenuItemCreateManyInput | Prisma.MenuItemCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1669,6 +1671,7 @@ export type MenuItemCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * The data used to create many MenuItems.
    */
   data: Prisma.MenuItemCreateManyInput | Prisma.MenuItemCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

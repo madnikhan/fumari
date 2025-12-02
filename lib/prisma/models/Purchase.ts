@@ -634,6 +634,7 @@ export type PurchaseCreateOrConnectWithoutSupplierInput = {
 
 export type PurchaseCreateManySupplierInputEnvelope = {
   data: Prisma.PurchaseCreateManySupplierInput | Prisma.PurchaseCreateManySupplierInput[]
+  skipDuplicates?: boolean
 }
 
 export type PurchaseUpsertWithWhereUniqueWithoutSupplierInput = {
@@ -1496,6 +1497,7 @@ export type PurchaseCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data used to create many Purchases.
    */
   data: Prisma.PurchaseCreateManyInput | Prisma.PurchaseCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1514,6 +1516,7 @@ export type PurchaseCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * The data used to create many Purchases.
    */
   data: Prisma.PurchaseCreateManyInput | Prisma.PurchaseCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

@@ -568,6 +568,7 @@ export type ReservationCreateOrConnectWithoutTableInput = {
 
 export type ReservationCreateManyTableInputEnvelope = {
   data: Prisma.ReservationCreateManyTableInput | Prisma.ReservationCreateManyTableInput[]
+  skipDuplicates?: boolean
 }
 
 export type ReservationUpsertWithWhereUniqueWithoutTableInput = {
@@ -1408,6 +1409,7 @@ export type ReservationCreateManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * The data used to create many Reservations.
    */
   data: Prisma.ReservationCreateManyInput | Prisma.ReservationCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1426,6 +1428,7 @@ export type ReservationCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    * The data used to create many Reservations.
    */
   data: Prisma.ReservationCreateManyInput | Prisma.ReservationCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

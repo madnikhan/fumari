@@ -556,6 +556,7 @@ export type VATReturnCreateOrConnectWithoutTaxPeriodInput = {
 
 export type VATReturnCreateManyTaxPeriodInputEnvelope = {
   data: Prisma.VATReturnCreateManyTaxPeriodInput | Prisma.VATReturnCreateManyTaxPeriodInput[]
+  skipDuplicates?: boolean
 }
 
 export type VATReturnUpsertWithWhereUniqueWithoutTaxPeriodInput = {
@@ -1385,6 +1386,7 @@ export type VATReturnCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * The data used to create many VATReturns.
    */
   data: Prisma.VATReturnCreateManyInput | Prisma.VATReturnCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1403,6 +1405,7 @@ export type VATReturnCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exten
    * The data used to create many VATReturns.
    */
   data: Prisma.VATReturnCreateManyInput | Prisma.VATReturnCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

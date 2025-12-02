@@ -1299,6 +1299,7 @@ export type TaxPeriodCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * The data used to create many TaxPeriods.
    */
   data: Prisma.TaxPeriodCreateManyInput | Prisma.TaxPeriodCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1317,6 +1318,7 @@ export type TaxPeriodCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exten
    * The data used to create many TaxPeriods.
    */
   data: Prisma.TaxPeriodCreateManyInput | Prisma.TaxPeriodCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**

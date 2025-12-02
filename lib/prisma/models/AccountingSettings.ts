@@ -1359,6 +1359,7 @@ export type AccountingSettingsCreateManyArgs<ExtArgs extends runtime.Types.Exten
    * The data used to create many AccountingSettings.
    */
   data: Prisma.AccountingSettingsCreateManyInput | Prisma.AccountingSettingsCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1377,6 +1378,7 @@ export type AccountingSettingsCreateManyAndReturnArgs<ExtArgs extends runtime.Ty
    * The data used to create many AccountingSettings.
    */
   data: Prisma.AccountingSettingsCreateManyInput | Prisma.AccountingSettingsCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
