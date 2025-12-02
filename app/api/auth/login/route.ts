@@ -34,14 +34,18 @@ export async function POST(request: Request) {
     } catch (dbError: any) {
       console.error('Database error:', dbError);
       // Log full error for debugging
-      console.error('Database error details:', {
+      // Log FULL error message (not truncated)
+      const fullError = {
         message: dbError.message,
         code: dbError.code,
         meta: dbError.meta,
         stack: dbError.stack,
         name: dbError.name,
         cause: dbError.cause,
-      });
+        // Stringify to ensure full message is logged
+        fullMessage: String(dbError.message),
+      };
+      console.error('Database error details:', JSON.stringify(fullError, null, 2));
       
       // Check if it's a Prisma Client initialization error
       if (dbError.name === 'PrismaClientInitializationError') {
