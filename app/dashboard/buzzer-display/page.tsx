@@ -94,7 +94,7 @@ export default function BuzzerDisplayPage() {
         const data = await response.json();
         
         // Check for new requests
-        const currentRequestIds = new Set(data.map((r: BuzzerRequest) => r.id));
+        const currentRequestIds = new Set<string>(data.map((r: BuzzerRequest) => r.id));
         const newRequests = data.filter((r: BuzzerRequest) => !previousRequestIds.current.has(r.id));
         
         // Play sound if there are new requests and sound is enabled
