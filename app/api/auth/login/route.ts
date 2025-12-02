@@ -28,8 +28,19 @@ export async function POST(request: Request) {
       });
     } catch (dbError: any) {
       console.error('Database error:', dbError);
+      // Log full error for debugging
+      console.error('Database error details:', {
+        message: dbError.message,
+        code: dbError.code,
+        meta: dbError.meta,
+        stack: dbError.stack,
+      });
       return NextResponse.json(
-        { error: 'Database error', details: process.env.NODE_ENV === 'development' ? dbError.message : 'Internal server error' },
+        { 
+          error: 'Database error', 
+          details: dbError.message || 'Internal server error',
+          code: dbError.code || 'UNKNOWN',
+        },
         { status: 500 }
       );
     }
