@@ -27,14 +27,36 @@ if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
 
 // Create Prisma client instance - don't override datasources, let it use DATABASE_URL from env
 const createPrismaClient = () => {
-  return new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
-  })
+  try {
+    const client = new PrismaClient({
+      log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+    })
+    
+    // Log DATABASE_URL status (without exposing the full URL)
+    if (process.env.DATABASE_URL) {
+      const url = new URL(process.env.DATABASE_URL)
+      console.log(`[Prisma] Initializing with database: ${url.hostname}:${url.port}`)
+    } else {
+      console.error('[Prisma] DATABASE_URL is not set!')
+    }
+    
+    return client
+  } catch (error: any) {
+    console.error('[Prisma] Failed to create PrismaClient:', error.message)
+    throw error
+  }
 }
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient()
 
 if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma
+}
+
+// Handle Prisma Client disconnection on process termination
+if (typeof process !== 'undefined') {
+  process.on('beforeExit', async () => {
+    await prisma.$disconnect()
+  })
 }
 

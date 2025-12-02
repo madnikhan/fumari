@@ -17,6 +17,11 @@ export async function POST(request: Request) {
     // Find user by username or email
     let user;
     try {
+      // Ensure Prisma Client is connected
+      await prisma.$connect().catch(() => {
+        // Connection might already be established, ignore error
+      });
+      
       user = await prisma.user.findFirst({
         where: {
           OR: [
@@ -34,7 +39,23 @@ export async function POST(request: Request) {
         code: dbError.code,
         meta: dbError.meta,
         stack: dbError.stack,
+        name: dbError.name,
+        cause: dbError.cause,
       });
+      
+      // Check if it's a Prisma Client initialization error
+      if (dbError.name === 'PrismaClientInitializationError') {
+        return NextResponse.json(
+          { 
+            error: 'Database connection failed', 
+            details: `Prisma Client initialization error: ${dbError.message}`,
+            code: dbError.code || 'P1001',
+            hint: 'Check DATABASE_URL environment variable',
+          },
+          { status: 500 }
+        );
+      }
+      
       return NextResponse.json(
         { 
           error: 'Database error', 
