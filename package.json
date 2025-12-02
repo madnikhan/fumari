@@ -6,6 +6,7 @@
     "dev": "next dev",
     "dev:demo": "next dev -H 0.0.0.0",
     "build": "prisma generate && next build",
+    "postbuild": "node scripts/copy-prisma-binary.js",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate",
