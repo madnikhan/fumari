@@ -87,7 +87,7 @@ export async function GET(request: Request) {
       totalVAT: 0,
       totalAmount: 0,
       byCategory: {} as Record<string, { count: number; subtotal: number; vat: number; total: number }>,
-      bySupplier: {} as Record<string, { count: number; subtotal: number; vat: number; total: number }>,
+      bySupplier: {} as Record<string, { count: number; subtotal: number; vat: number; total: number; supplierName: string }>,
     };
 
     purchases.forEach((purchase) => {
