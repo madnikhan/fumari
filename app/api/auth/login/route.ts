@@ -24,11 +24,15 @@ export async function POST(request: Request) {
       
       user = await prisma.user.findFirst({
         where: {
-          OR: [
-            { username },
-            { email: username },
+          AND: [
+            {
+              OR: [
+                { username },
+                { email: username },
+              ],
+            },
+            { active: true },
           ],
-          active: true,
         },
       });
     } catch (dbError: any) {
