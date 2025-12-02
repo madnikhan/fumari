@@ -41,10 +41,10 @@ export async function exportSalesReportToPDF(
   let yPos = margin;
 
   // Colors (RGB)
-  const maroon = [155, 78, 63];
-  const gold = [255, 225, 118];
-  const darkGray = [33, 34, 38];
-  const lightGray = [229, 229, 229];
+  const maroon: [number, number, number] = [155, 78, 63];
+  const gold: [number, number, number] = [255, 225, 118];
+  const darkGray: [number, number, number] = [33, 34, 38];
+  const lightGray: [number, number, number] = [229, 229, 229];
 
   // Header - Company Information
   doc.setFillColor(...maroon);
