@@ -91,7 +91,7 @@ export async function PATCH(request: Request) {
     } else {
       // Build update data object, handling empty strings as null
       const updateData: any = {
-        updatedBy: session.userId,
+        updatedBy: 'accounting',
       };
 
       if (vatRegistrationNumber !== undefined) {
