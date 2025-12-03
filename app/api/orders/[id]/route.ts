@@ -72,8 +72,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
-    const resolvedParams = await Promise.resolve(params);
-    const orderId = typeof resolvedParams === 'object' && 'id' in resolvedParams ? resolvedParams.id : (await resolvedParams).id;
+    const { id: orderId } = await Promise.resolve(params);
     const body = await request.json();
     const {
       items,
