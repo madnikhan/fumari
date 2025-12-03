@@ -2,6 +2,8 @@
 
 This guide explains how to integrate Handepay contactless card machines with the Fumari POS system.
 
+> **Note:** For **local network deployment**, see [HANDEPAY_LOCAL_NETWORK.md](./HANDEPAY_LOCAL_NETWORK.md) for specific setup instructions.
+
 ## Overview
 
 Handepay provides card payment terminals that can integrate with POS systems. This integration allows you to:
@@ -58,15 +60,25 @@ If Handepay provides an API, you can initiate payments programmatically.
    - Implement the `initiateHandepayPayment` function with actual Handepay API calls
    - Refer to Handepay API documentation for exact endpoints and request format
 
-### 3. Manual Entry (Fallback)
+### 3. Manual Entry (Recommended for Local Network)
 
-If automatic integration isn't available, staff can manually enter transaction IDs from card machine receipts.
+**Best for:** Local network deployments, simple setup, reliable
+
+If automatic integration isn't available, or for local network deployments, staff can manually enter transaction IDs from card machine receipts.
 
 **How It Works:**
 1. Customer pays on Handepay card machine
 2. Staff receives receipt with transaction ID
 3. Staff enters transaction ID in payment modal
 4. Payment is recorded in system
+
+**Advantages:**
+- ✅ Works perfectly on local network (no webhook needed)
+- ✅ Simple and reliable
+- ✅ No additional setup required
+- ✅ Works offline
+
+**This is the recommended method for local network deployments.**
 
 ## Using the Payment System
 
