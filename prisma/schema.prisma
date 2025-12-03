@@ -192,7 +192,7 @@ model OrderItem {
 model Payment {
   id            String   @id @default(cuid())
   orderId       String
-  order         Order    @relation(fields: [orderId], references: [id])
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   amount        Float
   method        String   // cash, card, handepay_card, digital_wallet
   status        String   @default("completed") // pending, completed, failed, refunded
