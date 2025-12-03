@@ -141,8 +141,25 @@ export async function POST(request: Request) {
     return NextResponse.json(payment, { status: 201 });
   } catch (error: any) {
     console.error('Error creating payment:', error);
+    console.error('Error stack:', error.stack);
+    console.error('Error details:', JSON.stringify(error, null, 2));
+    
+    // Provide more detailed error message
+    let errorMessage = 'Failed to create payment';
+    if (error.message) {
+      errorMessage += `: ${error.message}`;
+    }
+    if (error.code) {
+      errorMessage += ` (Code: ${error.code})`;
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to create payment', details: error.message },
+      { 
+        error: errorMessage, 
+        details: error.message,
+        code: error.code,
+        meta: error.meta,
+      },
       { status: 500 }
     );
   }
