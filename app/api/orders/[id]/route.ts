@@ -8,9 +8,10 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
-    const resolvedParams = await Promise.resolve(params);
+    const { id } = await Promise.resolve(params).then(p => typeof p === 'object' && 'then' in p ? p : Promise.resolve(p));
+    const orderId = typeof id === 'string' ? id : (await id);
     const order = await prisma.order.findUnique({
-      where: { id: resolvedParams.id },
+      where: { id: orderId },
       include: {
         table: {
           select: {
@@ -72,6 +73,7 @@ export async function PUT(
 ) {
   try {
     const resolvedParams = await Promise.resolve(params);
+    const orderId = typeof resolvedParams === 'object' && 'id' in resolvedParams ? resolvedParams.id : (await resolvedParams).id;
     const body = await request.json();
     const {
       items,
@@ -85,7 +87,7 @@ export async function PUT(
 
     // Check if order exists
     const existingOrder = await prisma.order.findUnique({
-      where: { id: resolvedParams.id },
+      where: { id: orderId },
       include: {
         items: true,
         payments: true,
@@ -118,7 +120,7 @@ export async function PUT(
       
       // Delete existing items and create new ones
       await prisma.orderItem.deleteMany({
-        where: { orderId: resolvedParams.id },
+        where: { orderId: orderId },
       });
 
       // Create new items
@@ -134,7 +136,7 @@ export async function PUT(
 
         await prisma.orderItem.create({
           data: {
-            orderId: resolvedParams.id,
+            orderId: orderId,
             menuItemId: item.menuItemId,
             quantity: item.quantity,
             price: menuItem.price,
@@ -180,7 +182,7 @@ export async function PUT(
 
     // Update order
     const updatedOrder = await prisma.order.update({
-      where: { id: resolvedParams.id },
+      where: { id: orderId },
       data: {
         subtotal,
         vatRate: finalVatRate,
