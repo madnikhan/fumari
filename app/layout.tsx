@@ -25,6 +25,16 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
     title: "Fumari",
   },
+  icons: {
+    icon: [
+      { url: "/fumari-logo.png", sizes: "192x192", type: "image/png" },
+      { url: "/fumari-logo.png", sizes: "512x512", type: "image/png" },
+      { url: "/fumari-logo.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/fumari-logo.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
   viewport: {
     width: "device-width",
     initialScale: 1,

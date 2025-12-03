@@ -12,15 +12,21 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: 'any',
     icons: [
       {
-        src: '/icon-192.png',
+        src: '/fumari-logo.png',
         sizes: '192x192',
         type: 'image/png',
         purpose: 'any',
       },
       {
-        src: '/icon-512.png',
+        src: '/fumari-logo.png',
         sizes: '512x512',
         type: 'image/png',
+        purpose: 'any',
+      },
+      {
+        src: '/fumari-logo.svg',
+        sizes: 'any',
+        type: 'image/svg+xml',
         purpose: 'any',
       },
     ],
@@ -31,21 +37,21 @@ export default function manifest(): MetadataRoute.Manifest {
         short_name: 'Tables',
         description: 'View table management',
         url: '/dashboard/tables',
-        icons: [{ src: '/icon-192.png', sizes: '192x192' }],
+        icons: [{ src: '/fumari-logo.png', sizes: '192x192' }],
       },
       {
         name: 'Orders',
         short_name: 'Orders',
         description: 'View orders',
         url: '/dashboard/orders',
-        icons: [{ src: '/icon-192.png', sizes: '192x192' }],
+        icons: [{ src: '/fumari-logo.png', sizes: '192x192' }],
       },
       {
         name: 'Kiosk',
         short_name: 'Kiosk',
         description: 'Open kiosk mode',
         url: '/dashboard/kiosk',
-        icons: [{ src: '/icon-192.png', sizes: '192x192' }],
+        icons: [{ src: '/fumari-logo.png', sizes: '192x192' }],
       },
     ],
   };
