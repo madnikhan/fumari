@@ -61,7 +61,7 @@ export async function POST(request: Request) {
           const token = generateTableToken(t.number);
           console.log(`Token generated: ${token.substring(0, 8)}...`);
           
-          const qrUrl = getTableQRUrl(t.number, token);
+          const qrUrl = getTableQRUrl(t.number, token, request.url);
           console.log(`QR URL: ${qrUrl}`);
           
           const qrCodeDataURL = await generateQRCodeDataURL(qrUrl);
@@ -107,7 +107,7 @@ export async function POST(request: Request) {
 
     // Generate QR code for specific table
     const token = generateTableToken(table.number);
-    const qrUrl = getTableQRUrl(table.number, token);
+    const qrUrl = getTableQRUrl(table.number, token, request.url);
     const qrCodeDataURL = await generateQRCodeDataURL(qrUrl);
 
     // Update table with QR code token
@@ -175,7 +175,7 @@ export async function GET(request: Request) {
     }
 
     const { getTableQRUrl, generateQRCodeDataURL } = await import('@/lib/qrcode');
-    const qrUrl = getTableQRUrl(table.number, token);
+    const qrUrl = getTableQRUrl(table.number, token, request.url);
     const qrCodeDataURL = await generateQRCodeDataURL(qrUrl);
 
     return NextResponse.json({

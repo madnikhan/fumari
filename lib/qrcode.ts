@@ -13,8 +13,27 @@ export function generateTableToken(tableNumber: number): string {
 /**
  * Generate QR code URL for a table
  */
-export function getTableQRUrl(tableNumber: number, token: string): string {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+export function getTableQRUrl(tableNumber: number, token: string, requestUrl?: string): string {
+  // Try to get base URL from environment variable first
+  let baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  
+  // If not set, try to detect from request URL (for API routes)
+  if (!baseUrl && requestUrl) {
+    try {
+      const url = new URL(requestUrl);
+      baseUrl = `${url.protocol}//${url.host}`;
+    } catch (e) {
+      // Fallback if URL parsing fails
+    }
+  }
+  
+  // Fallback to localhost for development
+  if (!baseUrl) {
+    baseUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://fumari.vercel.app' 
+      : 'http://localhost:3000';
+  }
+  
   return `${baseUrl}/table/${tableNumber}?token=${token}`;
 }
 
