@@ -53,12 +53,24 @@ export async function POST(request: Request) {
       
       // Check if it's a Prisma Client initialization error
       if (dbError.name === 'PrismaClientInitializationError') {
+        const errorCode = dbError.code || 'P1001';
+        let hint = 'Check DATABASE_URL environment variable';
+        
+        // Provide specific hints based on error code
+        if (errorCode === 'P1001' || dbError.message.includes("Can't reach database server")) {
+          hint = 'Cannot reach database server. Most likely: Supabase project is paused. Go to Supabase Dashboard → Resume project → Wait 2 minutes → Try again.';
+        } else if (errorCode === 'P1000') {
+          hint = 'Authentication failed. Check if DATABASE_URL password is correct. Reset password in Supabase if needed.';
+        } else if (errorCode === 'P1017') {
+          hint = 'Server closed connection. Add ?sslmode=require to DATABASE_URL connection string.';
+        }
+        
         return NextResponse.json(
           { 
             error: 'Database connection failed', 
             details: `Prisma Client initialization error: ${dbError.message}`,
-            code: dbError.code || 'P1001',
-            hint: 'Check DATABASE_URL environment variable',
+            code: errorCode,
+            hint: hint,
           },
           { status: 500 }
         );
