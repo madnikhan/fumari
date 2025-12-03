@@ -5,11 +5,12 @@ import { calculateVAT, calculateTotalWithVAT, getStandardVATRate } from '@/lib/v
 // Get a single order
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
+    const resolvedParams = await Promise.resolve(params);
     const order = await prisma.order.findUnique({
-      where: { id: params.id },
+      where: { id: resolvedParams.id },
       include: {
         table: {
           select: {
@@ -67,9 +68,10 @@ export async function GET(
 // Update an order
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
+    const resolvedParams = await Promise.resolve(params);
     const body = await request.json();
     const {
       items,
@@ -83,7 +85,7 @@ export async function PUT(
 
     // Check if order exists
     const existingOrder = await prisma.order.findUnique({
-      where: { id: params.id },
+      where: { id: resolvedParams.id },
       include: {
         items: true,
         payments: true,
@@ -116,7 +118,7 @@ export async function PUT(
       
       // Delete existing items and create new ones
       await prisma.orderItem.deleteMany({
-        where: { orderId: params.id },
+        where: { orderId: resolvedParams.id },
       });
 
       // Create new items
@@ -132,7 +134,7 @@ export async function PUT(
 
         await prisma.orderItem.create({
           data: {
-            orderId: params.id,
+            orderId: resolvedParams.id,
             menuItemId: item.menuItemId,
             quantity: item.quantity,
             price: menuItem.price,
@@ -178,7 +180,7 @@ export async function PUT(
 
     // Update order
     const updatedOrder = await prisma.order.update({
-      where: { id: params.id },
+      where: { id: resolvedParams.id },
       data: {
         subtotal,
         vatRate: finalVatRate,
@@ -254,7 +256,7 @@ export async function DELETE(
     });
 
     if (!existingOrder) {
-      console.log('Order not found:', params.id);
+      console.log('Order not found:', orderId);
       return NextResponse.json(
         { error: 'Order not found' },
         { status: 404 }
@@ -270,19 +272,19 @@ export async function DELETE(
       );
     }
 
-    console.log('Deleting order:', params.id, 'with', existingOrder.items.length, 'items');
+    console.log('Deleting order:', orderId, 'with', existingOrder.items.length, 'items');
 
     // Delete order items first (if not cascading)
     await prisma.orderItem.deleteMany({
-      where: { orderId: params.id },
+      where: { orderId: orderId },
     });
 
     // Delete order
     await prisma.order.delete({
-      where: { id: params.id },
+      where: { id: orderId },
     });
 
-    console.log('Order deleted successfully:', params.id);
+    console.log('Order deleted successfully:', orderId);
     return NextResponse.json({ message: 'Order deleted successfully' });
   } catch (error: any) {
     console.error('Error deleting order:', error);

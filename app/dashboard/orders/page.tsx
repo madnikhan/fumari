@@ -376,7 +376,21 @@ export default function OrdersPage() {
         },
       });
 
-      const data = await response.json();
+      // Check if response has content before parsing JSON
+      const contentType = response.headers.get('content-type');
+      let data: any = {};
+      
+      if (contentType && contentType.includes('application/json')) {
+        const text = await response.text();
+        if (text) {
+          try {
+            data = JSON.parse(text);
+          } catch (e) {
+            console.error('Failed to parse JSON response:', text);
+            data = { error: 'Invalid response from server' };
+          }
+        }
+      }
 
       if (response.ok) {
         showToast('Order deleted successfully!', 'success');
@@ -384,7 +398,10 @@ export default function OrdersPage() {
         fetchOrders();
       } else {
         console.error('Delete error response:', data);
-        showToast(`Error: ${data.error || 'Failed to delete order'}`, 'error');
+        console.error('Response status:', response.status);
+        console.error('Response statusText:', response.statusText);
+        const errorMessage = data.error || data.message || `Failed to delete order (${response.status})`;
+        showToast(`Error: ${errorMessage}`, 'error');
       }
     } catch (error: any) {
       console.error('Error deleting order:', error);
