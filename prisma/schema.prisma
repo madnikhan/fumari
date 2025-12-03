@@ -194,14 +194,16 @@ model Payment {
   orderId       String
   order         Order    @relation(fields: [orderId], references: [id])
   amount        Float
-  method        String   // cash, card, digital_wallet
-  status        String   @default("completed") // pending, completed, refunded
+  method        String   // cash, card, handepay_card, digital_wallet
+  status        String   @default("completed") // pending, completed, failed, refunded
   transactionId String?
+  handepayData  String?  // JSON string for Handepay transaction details
   
   createdAt     DateTime @default(now())
   
   @@index([orderId])
   @@index([status])
+  @@index([transactionId])
 }
 
 // Buzzer requests from customers

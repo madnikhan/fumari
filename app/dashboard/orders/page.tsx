@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, ShoppingCart, Clock, CheckCircle, X, Minus, Trash2, Search, Edit, Pencil } from 'lucide-react';
+import { Plus, ShoppingCart, Clock, CheckCircle, X, Minus, Trash2, Search, Edit, Pencil, CreditCard, DollarSign, Wallet } from 'lucide-react';
 import { showToast } from '@/components/Toast';
 
 interface Order {
@@ -18,6 +18,16 @@ interface Order {
   discount?: number;
   notes?: string;
   items: OrderItem[];
+  payments?: Payment[];
+  createdAt: string;
+}
+
+interface Payment {
+  id: string;
+  amount: number;
+  method: string;
+  status: string;
+  transactionId?: string;
   createdAt: string;
 }
 
@@ -88,6 +98,12 @@ export default function OrdersPage() {
   const [editNotes, setEditNotes] = useState('');
   const [editItems, setEditItems] = useState<OrderItem[]>([]);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedOrderForPayment, setSelectedOrderForPayment] = useState<Order | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<string>('handepay_card');
+  const [paymentAmount, setPaymentAmount] = useState<number>(0);
+  const [processingPayment, setProcessingPayment] = useState(false);
+  const [handepayTransactionId, setHandepayTransactionId] = useState<string>('');
 
   useEffect(() => {
     fetchOrders();
@@ -391,6 +407,105 @@ export default function OrdersPage() {
     const totalBeforeDiscount = subtotal + vatAmount + editServiceCharge;
     const total = Math.max(0, totalBeforeDiscount - editDiscount);
     return { subtotal, vatAmount, total };
+  };
+
+  const handleOpenPaymentModal = async (order: Order) => {
+    // Fetch order with payments
+    try {
+      const response = await fetch(`/api/orders/${order.id}`);
+      if (response.ok) {
+        const fullOrder = await response.json();
+        setSelectedOrderForPayment(fullOrder);
+        const totalPaid = (fullOrder.payments || []).reduce((sum: number, p: Payment) => sum + p.amount, 0);
+        const remaining = fullOrder.total - totalPaid;
+        setPaymentAmount(remaining);
+        setShowPaymentModal(true);
+      } else {
+        setSelectedOrderForPayment(order);
+        setPaymentAmount(order.total);
+        setShowPaymentModal(true);
+      }
+    } catch (error) {
+      setSelectedOrderForPayment(order);
+      setPaymentAmount(order.total);
+      setShowPaymentModal(true);
+    }
+  };
+
+  const calculateRemainingBalance = (order: Order): number => {
+    const totalPaid = (order.payments || []).reduce((sum: number, p: Payment) => sum + p.amount, 0);
+    return Math.max(0, order.total - totalPaid);
+  };
+
+  const handleProcessPayment = async () => {
+    if (!selectedOrderForPayment) return;
+
+    if (paymentAmount <= 0) {
+      showToast('Please enter a valid payment amount', 'error');
+      return;
+    }
+
+    const remaining = calculateRemainingBalance(selectedOrderForPayment);
+    if (paymentAmount > remaining + 0.01) {
+      showToast(`Payment amount cannot exceed remaining balance of £${remaining.toFixed(2)}`, 'error');
+      return;
+    }
+
+    setProcessingPayment(true);
+    try {
+      // For Handepay card payments, initiate payment on card machine
+      if (paymentMethod === 'handepay_card') {
+        // In production, this would call the Handepay API to initiate payment
+        // For now, we'll create a pending payment and wait for webhook confirmation
+        const response = await fetch('/api/payments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId: selectedOrderForPayment.id,
+            amount: paymentAmount,
+            method: 'handepay_card',
+            transactionId: handepayTransactionId || undefined,
+          }),
+        });
+
+        if (response.ok) {
+          showToast('Payment initiated. Please process on Handepay card machine.', 'success');
+          setShowPaymentModal(false);
+          setSelectedOrderForPayment(null);
+          setHandepayTransactionId('');
+          fetchOrders();
+        } else {
+          const error = await response.json();
+          showToast(`Error: ${error.error || 'Failed to process payment'}`, 'error');
+        }
+      } else {
+        // Cash or other payment methods
+        const response = await fetch('/api/payments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId: selectedOrderForPayment.id,
+            amount: paymentAmount,
+            method: paymentMethod,
+          }),
+        });
+
+        if (response.ok) {
+          showToast('Payment processed successfully!', 'success');
+          setShowPaymentModal(false);
+          setSelectedOrderForPayment(null);
+          fetchOrders();
+        } else {
+          const error = await response.json();
+          showToast(`Error: ${error.error || 'Failed to process payment'}`, 'error');
+        }
+      }
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      showToast('Failed to process payment. Please try again.', 'error');
+    } finally {
+      setProcessingPayment(false);
+    }
   };
 
   // Ensure orders is always an array
@@ -721,11 +836,23 @@ export default function OrdersPage() {
               ))}
             </div>
 
-            <div className="pt-4 border-t border-[#800020] flex items-center justify-between">
-              <span className="text-lg font-bold text-[#D4AF37]">
-                Total: £{order.total.toFixed(2)}
-              </span>
-              <div className="flex space-x-2">
+            <div className="pt-4 border-t border-[#800020]">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-lg font-bold text-[#D4AF37]">
+                  Total: £{order.total.toFixed(2)}
+                </span>
+                {order.payments && order.payments.length > 0 && (
+                  <div className="text-sm text-gray-300">
+                    Paid: £{order.payments.reduce((sum: number, p: Payment) => sum + p.amount, 0).toFixed(2)}
+                  </div>
+                )}
+              </div>
+              {order.payments && order.payments.length > 0 && (
+                <div className="text-xs text-gray-400 mb-2">
+                  Remaining: £{calculateRemainingBalance(order).toFixed(2)}
+                </div>
+              )}
+              <div className="flex flex-wrap gap-2">
                 <button 
                   onClick={() => handleEditOrder(order)}
                   className="px-3 py-1 bg-[#D4AF37] text-black rounded hover:bg-[#f4c430] text-sm font-medium flex items-center gap-1"
@@ -733,6 +860,15 @@ export default function OrdersPage() {
                   <Pencil className="w-3 h-3" />
                   Edit
                 </button>
+                {calculateRemainingBalance(order) > 0.01 && (
+                  <button 
+                    onClick={() => handleOpenPaymentModal(order)}
+                    className="px-3 py-1 bg-[#1a4d2e] text-white rounded hover:bg-[#2d7a4f] text-sm font-medium flex items-center gap-1"
+                  >
+                    <CreditCard className="w-3 h-3" />
+                    Pay
+                  </button>
+                )}
                 <button 
                   onClick={() => setShowDeleteConfirm(order.id)}
                   className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium flex items-center gap-1"
@@ -942,6 +1078,119 @@ export default function OrdersPage() {
                   {submitting ? 'Updating Order...' : 'Update Order'}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Modal */}
+      {showPaymentModal && selectedOrderForPayment && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#1a1a1a] rounded-lg shadow-2xl max-w-md w-full border-2 border-[#D4AF37] p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-[#D4AF37]">Process Payment</h3>
+              <button
+                onClick={() => {
+                  setShowPaymentModal(false);
+                  setSelectedOrderForPayment(null);
+                  setHandepayTransactionId('');
+                }}
+                className="text-gray-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="mb-4 p-4 bg-[#2a2a2a] rounded-lg border border-[#800020]">
+              <div className="text-sm text-gray-300 mb-1">Table {selectedOrderForPayment.table.number}</div>
+              <div className="text-lg font-bold text-white mb-2">£{selectedOrderForPayment.total.toFixed(2)}</div>
+              {selectedOrderForPayment.payments && selectedOrderForPayment.payments.length > 0 && (
+                <div className="text-sm text-gray-400">
+                  Already paid: £{selectedOrderForPayment.payments.reduce((sum: number, p: Payment) => sum + p.amount, 0).toFixed(2)}
+                </div>
+              )}
+              <div className="text-sm font-semibold text-[#D4AF37] mt-1">
+                Remaining: £{calculateRemainingBalance(selectedOrderForPayment).toFixed(2)}
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Payment Method</label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => setPaymentMethod('handepay_card')}
+                  className={`p-3 rounded-lg border-2 transition-all flex items-center justify-center gap-2 ${
+                    paymentMethod === 'handepay_card'
+                      ? 'bg-[#D4AF37] text-black border-[#D4AF37]'
+                      : 'bg-[#2a2a2a] text-white border-[#800020] hover:border-[#D4AF37]'
+                  }`}
+                >
+                  <CreditCard className="w-4 h-4" />
+                  <span className="text-sm font-medium">Handepay Card</span>
+                </button>
+                <button
+                  onClick={() => setPaymentMethod('cash')}
+                  className={`p-3 rounded-lg border-2 transition-all flex items-center justify-center gap-2 ${
+                    paymentMethod === 'cash'
+                      ? 'bg-[#D4AF37] text-black border-[#D4AF37]'
+                      : 'bg-[#2a2a2a] text-white border-[#800020] hover:border-[#D4AF37]'
+                  }`}
+                >
+                  <DollarSign className="w-4 h-4" />
+                  <span className="text-sm font-medium">Cash</span>
+                </button>
+              </div>
+            </div>
+
+            {paymentMethod === 'handepay_card' && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Transaction ID (Optional - from card machine receipt)
+                </label>
+                <input
+                  type="text"
+                  value={handepayTransactionId}
+                  onChange={(e) => setHandepayTransactionId(e.target.value)}
+                  placeholder="Enter transaction ID if available"
+                  className="w-full px-3 py-2 bg-black border-2 border-[#800020] rounded-lg text-white focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37]"
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  If left empty, payment will be marked as pending until Handepay webhook confirms it.
+                </p>
+              </div>
+            )}
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Payment Amount (£)</label>
+              <input
+                type="number"
+                value={paymentAmount}
+                onChange={(e) => setPaymentAmount(parseFloat(e.target.value) || 0)}
+                step="0.01"
+                min="0.01"
+                max={calculateRemainingBalance(selectedOrderForPayment)}
+                className="w-full px-3 py-2 bg-black border-2 border-[#800020] rounded-lg text-white text-lg font-bold focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37]"
+              />
+            </div>
+
+            <div className="flex space-x-4">
+              <button
+                onClick={() => {
+                  setShowPaymentModal(false);
+                  setSelectedOrderForPayment(null);
+                  setHandepayTransactionId('');
+                }}
+                className="flex-1 px-4 py-2 bg-[#4a5568] text-white rounded-lg hover:bg-[#6b7280] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleProcessPayment}
+                disabled={processingPayment || paymentAmount <= 0}
+                className="flex-1 px-4 py-2 bg-[#D4AF37] text-black rounded-lg hover:bg-[#f4c430] disabled:opacity-50 disabled:cursor-not-allowed font-bold transition-colors"
+              >
+                {processingPayment ? 'Processing...' : 'Process Payment'}
+              </button>
             </div>
           </div>
         </div>

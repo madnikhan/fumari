@@ -29,6 +29,19 @@ export async function GET(request: Request) {
             },
           },
         },
+        payments: {
+          select: {
+            id: true,
+            amount: true,
+            method: true,
+            status: true,
+            transactionId: true,
+            createdAt: true,
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
