@@ -19,7 +19,6 @@ export const metadata: Metadata = {
   title: "Fumari Restaurant Management System",
   description: "Complete restaurant management system for large-scale operations",
   manifest: "/manifest.json",
-  themeColor: "#9B4E3F",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -35,12 +34,14 @@ export const metadata: Metadata = {
       { url: "/fumari-logo.png", sizes: "180x180", type: "image/png" },
     ],
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: "#9B4E3F",
 };
 
 export default function RootLayout({

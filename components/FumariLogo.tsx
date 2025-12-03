@@ -35,6 +35,7 @@ export default function FumariLogo({
             width={dimensions.width}
             height={dimensions.height}
             className="object-contain"
+            style={{ width: 'auto', height: 'auto' }}
             priority
             onError={() => {
               // Fallback to SVG if PNG doesn't exist
