@@ -242,14 +242,15 @@ export async function PUT(
 // Delete an order
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
-    console.log('DELETE request for order:', params.id);
+    const { id: orderId } = await Promise.resolve(params);
+    console.log('DELETE request for order:', orderId);
 
     // Check if order exists
     const existingOrder = await prisma.order.findUnique({
-      where: { id: params.id },
+      where: { id: orderId },
       include: {
         payments: true,
         items: true,
