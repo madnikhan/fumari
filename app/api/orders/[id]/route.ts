@@ -265,13 +265,9 @@ export async function DELETE(
       );
     }
 
-    // Prevent deletion if order has payments
+    // Warn if order has payments (but allow deletion - payments will be cascade deleted)
     if (existingOrder.payments.length > 0) {
-      console.log('Cannot delete order with payments:', existingOrder.payments.length);
-      return NextResponse.json(
-        { error: 'Cannot delete order with existing payments. Please refund payments first.' },
-        { status: 400 }
-      );
+      console.log('Warning: Deleting order with payments:', existingOrder.payments.length, '- payments will be cascade deleted');
     }
 
     console.log('Deleting order:', orderId, 'with', existingOrder.items.length, 'items');
