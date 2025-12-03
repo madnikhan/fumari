@@ -152,12 +152,28 @@ export async function PUT(
 
     // Update discount if provided
     if (discount !== undefined) {
+      // Validate discount: must be >= 0 and not exceed total before discount
+      if (discount < 0) {
+        return NextResponse.json(
+          { error: 'Discount cannot be negative' },
+          { status: 400 }
+        );
+      }
       finalDiscount = discount;
     }
 
     // Recalculate totals (no service charge)
     const vatAmount = calculateVAT(subtotal, finalVatRate);
     const totalBeforeDiscount = calculateTotalWithVAT(subtotal, finalVatRate);
+    
+    // Ensure discount doesn't exceed total before discount
+    if (finalDiscount > totalBeforeDiscount) {
+      return NextResponse.json(
+        { error: `Discount cannot exceed total amount of £${totalBeforeDiscount.toFixed(2)}` },
+        { status: 400 }
+      );
+    }
+    
     const total = Math.max(0, totalBeforeDiscount - finalDiscount);
 
     // Update order
@@ -196,8 +212,25 @@ export async function PUT(
     return NextResponse.json(updatedOrder);
   } catch (error: any) {
     console.error('Error updating order:', error);
+    console.error('Error stack:', error.stack);
+    console.error('Error details:', JSON.stringify(error, null, 2));
+    
+    // Provide more detailed error message
+    let errorMessage = 'Failed to update order';
+    if (error.message) {
+      errorMessage += `: ${error.message}`;
+    }
+    if (error.code) {
+      errorMessage += ` (Code: ${error.code})`;
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to update order', details: error.message },
+      { 
+        error: errorMessage, 
+        details: error.message,
+        code: error.code,
+        meta: error.meta,
+      },
       { status: 500 }
     );
   }

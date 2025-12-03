@@ -311,6 +311,20 @@ export default function OrdersPage() {
   const handleUpdateOrder = async () => {
     if (!editingOrder) return;
 
+    // Validate discount
+    const { subtotal, vatAmount, total } = calculateEditTotals();
+    const totalBeforeDiscount = subtotal + vatAmount;
+    
+    if (editDiscount < 0) {
+      showToast('Discount cannot be negative', 'error');
+      return;
+    }
+    
+    if (editDiscount > totalBeforeDiscount) {
+      showToast(`Discount cannot exceed total amount of £${totalBeforeDiscount.toFixed(2)}`, 'error');
+      return;
+    }
+
     setSubmitting(true);
     try {
       const response = await fetch(`/api/orders/${editingOrder.id}`, {
@@ -324,7 +338,7 @@ export default function OrdersPage() {
           })),
           vatRate: editVatRate,
           serviceCharge: 0, // Service charge removed - always 0
-          discount: editDiscount,
+          discount: Number(editDiscount) || 0, // Ensure it's a number
           notes: editNotes,
         }),
       });
@@ -1000,11 +1014,24 @@ export default function OrdersPage() {
                   <input
                     type="number"
                     value={editDiscount}
-                    onChange={(e) => setEditDiscount(parseFloat(e.target.value) || 0)}
+                    onChange={(e) => {
+                      const value = parseFloat(e.target.value) || 0;
+                      setEditDiscount(value);
+                    }}
                     step="0.01"
                     min="0"
+                    max={(() => {
+                      const { subtotal, vatAmount } = calculateEditTotals();
+                      return subtotal + vatAmount;
+                    })()}
                     className="w-full px-3 py-2 bg-black border-2 border-[#800020] rounded-lg text-white focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37]"
                   />
+                  <p className="text-xs text-gray-400 mt-1">
+                    Max discount: £{(() => {
+                      const { subtotal, vatAmount } = calculateEditTotals();
+                      return (subtotal + vatAmount).toFixed(2);
+                    })()}
+                  </p>
                 </div>
 
                 {/* Totals */}
