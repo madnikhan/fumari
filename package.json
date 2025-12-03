@@ -13,6 +13,8 @@
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
+    "db:switch-sqlite": "node scripts/switch-to-sqlite.js && npm run db:generate",
+    "db:switch-postgresql": "node scripts/switch-to-postgresql.js && npm run db:generate",
     "demo:ip": "node -e \"const os = require('os'); const nets = os.networkInterfaces(); for (const name of Object.keys(nets)) { for (const net of nets[name]) { if (net.family === 'IPv4' && !net.internal) { console.log('\\n📱 Your MacBook IP Address:', net.address); console.log('🌐 Access from phones: http://' + net.address + ':3000\\n'); } } }\""
   },
   "prisma": {

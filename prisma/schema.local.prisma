@@ -1,0 +1,16 @@
+// Local development schema - uses SQLite
+// This file is used when DATABASE_URL is not set or points to SQLite
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Copy all models from schema.prisma but with SQLite-compatible syntax
+// For now, we'll use the main schema.prisma with conditional provider
+

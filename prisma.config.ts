@@ -7,29 +7,61 @@ config({ path: ".env.local" });
 // Then load .env as fallback
 config();
 
-// In production, DATABASE_URL must be set (no fallback to SQLite)
-// In development, fallback to SQLite if DATABASE_URL is not set
-const getDatabaseUrl = () => {
-  if (process.env.DATABASE_URL) {
-    return process.env.DATABASE_URL;
+// Determine database provider and URL
+const getDatabaseConfig = () => {
+  const databaseUrl = process.env.DATABASE_URL;
+  
+  // If DATABASE_URL is explicitly set, use it (could be PostgreSQL for Vercel)
+  if (databaseUrl) {
+    // Check if it's a PostgreSQL URL (starts with postgresql:// or postgres://)
+    if (databaseUrl.startsWith('postgresql://') || databaseUrl.startsWith('postgres://')) {
+      return {
+        provider: 'postgresql',
+        url: databaseUrl,
+        schema: 'prisma/schema.prisma',
+      };
+    }
+    // If it's a file:// URL, use SQLite
+    if (databaseUrl.startsWith('file:')) {
+      return {
+        provider: 'sqlite',
+        url: databaseUrl,
+        schema: 'prisma/schema.prisma',
+      };
+    }
   }
   
-  // Only fallback to SQLite in development
-  if (process.env.NODE_ENV !== 'production') {
-    return `file:${path.join(process.cwd(), "dev.db")}`;
+  // In production (Vercel), DATABASE_URL must be set (PostgreSQL)
+  if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
+    if (!databaseUrl) {
+      throw new Error('DATABASE_URL environment variable is required in production/Vercel');
+    }
+    return {
+      provider: 'postgresql',
+      url: databaseUrl,
+      schema: 'prisma/schema.prisma',
+    };
   }
   
-  // In production, throw error if DATABASE_URL is not set
-  throw new Error('DATABASE_URL environment variable is required in production');
+  // In local development, default to SQLite if DATABASE_URL not set
+  const sqlitePath = `file:${path.join(process.cwd(), "dev.db")}`;
+  console.log('[Prisma Config] Using SQLite for local development:', sqlitePath);
+  return {
+    provider: 'sqlite',
+    url: sqlitePath,
+    schema: 'prisma/schema.prisma',
+  };
 };
 
+const dbConfig = getDatabaseConfig();
+
 export default defineConfig({
-  schema: "prisma/schema.prisma",
+  schema: dbConfig.schema,
   migrations: {
     path: "prisma/migrations",
   },
   engine: "classic",
   datasource: {
-    url: getDatabaseUrl(),
+    url: dbConfig.url,
   },
 });

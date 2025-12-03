@@ -6,11 +6,12 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 // Ensure DATABASE_URL is set correctly
-// In production, DATABASE_URL should be set via environment variables (PostgreSQL)
-// In development, fallback to SQLite if not set
-if (!process.env.DATABASE_URL && process.env.NODE_ENV !== 'production') {
+// In production/Vercel, DATABASE_URL should be set via environment variables (PostgreSQL)
+// In local development, fallback to SQLite if not set
+if (!process.env.DATABASE_URL && process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   const dbPath = path.join(process.cwd(), 'dev.db')
   process.env.DATABASE_URL = `file:${dbPath}`
+  console.log('[Prisma] Using SQLite for local development:', dbPath)
 }
 
 // Ensure absolute path for SQLite
@@ -20,9 +21,9 @@ if (process.env.DATABASE_URL?.startsWith('file:./')) {
   process.env.DATABASE_URL = `file:${absolutePath}`
 }
 
-// Validate DATABASE_URL in production
-if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL environment variable is required in production')
+// Validate DATABASE_URL in production/Vercel
+if ((process.env.NODE_ENV === 'production' || process.env.VERCEL) && !process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL environment variable is required in production/Vercel. Use Railway PostgreSQL.')
 }
 
 // Create Prisma client instance - don't override datasources, let it use DATABASE_URL from env
