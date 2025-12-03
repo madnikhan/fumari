@@ -201,8 +201,8 @@ export default function OrdersPage() {
   const calculateTotals = () => {
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const tax = subtotal * 0.20; // 20% UK VAT
-    const serviceCharge = subtotal * 0.10; // 10% service charge
-    const total = subtotal + tax + serviceCharge;
+    const serviceCharge = 0; // Service charge removed - client doesn't charge service charges
+    const total = subtotal + tax;
     return { subtotal, tax, serviceCharge, total };
   };
 
@@ -300,7 +300,7 @@ export default function OrdersPage() {
   const handleEditOrder = async (order: Order) => {
     setEditingOrder(order);
     setEditVatRate(order.vatRate || 20);
-    setEditServiceCharge(order.serviceCharge || 0);
+    setEditServiceCharge(0); // Service charge removed - always 0
     setEditDiscount(order.discount || 0);
     setEditNotes(order.notes || '');
     setEditItems([...order.items]);
@@ -323,7 +323,7 @@ export default function OrdersPage() {
             specialInstructions: item.specialInstructions,
           })),
           vatRate: editVatRate,
-          serviceCharge: editServiceCharge,
+          serviceCharge: 0, // Service charge removed - always 0
           discount: editDiscount,
           notes: editNotes,
         }),
@@ -404,7 +404,7 @@ export default function OrdersPage() {
   const calculateEditTotals = () => {
     const subtotal = editItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const vatAmount = (subtotal * editVatRate) / 100;
-    const totalBeforeDiscount = subtotal + vatAmount + editServiceCharge;
+    const totalBeforeDiscount = subtotal + vatAmount; // No service charge
     const total = Math.max(0, totalBeforeDiscount - editDiscount);
     return { subtotal, vatAmount, total };
   };
@@ -721,13 +721,9 @@ export default function OrdersPage() {
                             <span>Subtotal</span>
                             <span>£{subtotal.toFixed(2)}</span>
                           </div>
-                          <div className="flex justify-between text-sm text-gray-300 mb-1">
+                          <div className="flex justify-between text-sm text-gray-300 mb-2">
                             <span>VAT (20%)</span>
                             <span>£{tax.toFixed(2)}</span>
-                          </div>
-                          <div className="flex justify-between text-sm text-gray-300 mb-2">
-                            <span>Service Charge (10%)</span>
-                            <span>£{serviceCharge.toFixed(2)}</span>
                           </div>
                           <div className="border-t border-[#800020] pt-2 flex justify-between text-lg font-bold text-[#D4AF37]">
                             <span>Total</span>
@@ -998,19 +994,6 @@ export default function OrdersPage() {
                   />
                 </div>
 
-                {/* Service Charge */}
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Service Charge (£)</label>
-                  <input
-                    type="number"
-                    value={editServiceCharge}
-                    onChange={(e) => setEditServiceCharge(parseFloat(e.target.value) || 0)}
-                    step="0.01"
-                    min="0"
-                    className="w-full px-3 py-2 bg-black border-2 border-[#800020] rounded-lg text-white focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37]"
-                  />
-                </div>
-
                 {/* Discount */}
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-300 mb-2">Discount (£)</label>
@@ -1037,10 +1020,6 @@ export default function OrdersPage() {
                         <div className="flex justify-between text-sm text-gray-300 mb-1">
                           <span>VAT ({editVatRate}%)</span>
                           <span>£{vatAmount.toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between text-sm text-gray-300 mb-1">
-                          <span>Service Charge</span>
-                          <span>£{editServiceCharge.toFixed(2)}</span>
                         </div>
                         {editDiscount > 0 && (
                           <div className="flex justify-between text-sm text-red-400 mb-1">

@@ -182,8 +182,8 @@ export default function KioskPage() {
   const calculateTotals = () => {
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const tax = subtotal * 0.20; // 20% UK VAT
-    const serviceCharge = orderType === 'dine_in' ? subtotal * 0.10 : 0; // 10% service charge for dine-in only
-    const total = subtotal + tax + serviceCharge;
+    const serviceCharge = 0; // Service charge removed - client doesn't charge service charges
+    const total = subtotal + tax;
     return { subtotal, tax, serviceCharge, total };
   };
 
@@ -610,12 +610,6 @@ export default function KioskPage() {
                     <span>VAT (20%)</span>
                     <span>£{cartTotal.tax.toFixed(2)}</span>
                   </div>
-                  {orderType === 'dine_in' && (
-                    <div className="flex justify-between text-gray-300">
-                      <span>Service Charge (10%)</span>
-                      <span>£{cartTotal.serviceCharge.toFixed(2)}</span>
-                    </div>
-                  )}
                   <div className="border-t-2 border-[#800020] pt-2 flex justify-between text-[#D4AF37] font-bold text-xl">
                     <span>Total</span>
                     <span>£{cartTotal.total.toFixed(2)}</span>

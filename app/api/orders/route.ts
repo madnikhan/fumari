@@ -170,8 +170,8 @@ export async function POST(request: Request) {
     // Calculate VAT (20% UK standard rate)
     const vatRate = getStandardVATRate();
     const vatAmount = calculateVAT(subtotal, vatRate);
-    const serviceCharge = subtotal * 0.10; // 10% service charge
-    const total = calculateTotalWithVAT(subtotal, vatRate) + serviceCharge;
+    const serviceCharge = 0; // Service charge removed - client doesn't charge service charges
+    const total = calculateTotalWithVAT(subtotal, vatRate);
     
     // Keep tax field for backward compatibility (same as vatAmount)
     const tax = vatAmount;

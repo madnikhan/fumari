@@ -126,7 +126,6 @@ export async function exportSalesReportToPDF(
       ['Total Orders', report.totals.totalOrders.toString()],
       ['Subtotal (before VAT)', `${settings.currencySymbol || '£'}${report.totals.totalSubtotal.toFixed(2)}`],
       ['VAT (20%)', `${settings.currencySymbol || '£'}${report.totals.totalVAT.toFixed(2)}`],
-      ['Service Charge', `${settings.currencySymbol || '£'}${report.totals.totalServiceCharge.toFixed(2)}`],
       ...(report.totals.totalDiscount > 0 ? [['Discounts', `-${settings.currencySymbol || '£'}${report.totals.totalDiscount.toFixed(2)}`]] : []),
       ['Total Revenue', `${settings.currencySymbol || '£'}${report.totals.totalAmount.toFixed(2)}`],
     ],
@@ -162,13 +161,12 @@ export async function exportSalesReportToPDF(
       `Table ${order.table?.number || 'N/A'}`,
       `${settings.currencySymbol || '£'}${order.subtotal.toFixed(2)}`,
       `${settings.currencySymbol || '£'}${order.vatAmount.toFixed(2)}`,
-      `${settings.currencySymbol || '£'}${order.serviceCharge.toFixed(2)}`,
       `${settings.currencySymbol || '£'}${order.total.toFixed(2)}`,
     ]);
 
     autoTable(doc, {
       startY: yPos,
-      head: [['Date', 'Order ID', 'Table', 'Subtotal', 'VAT', 'Service', 'Total']],
+      head: [['Date', 'Order ID', 'Table', 'Subtotal', 'VAT', 'Total']],
       body: orderRows,
       theme: 'striped',
       headStyles: {
@@ -183,8 +181,7 @@ export async function exportSalesReportToPDF(
       columnStyles: {
         3: { halign: 'right' },
         4: { halign: 'right' },
-        5: { halign: 'right' },
-        6: { halign: 'right', fontStyle: 'bold' },
+        5: { halign: 'right', fontStyle: 'bold' },
       },
     });
   } else if ((report.type === 'weekly' || report.type === 'monthly') && report.dailyBreakdown) {
@@ -199,13 +196,12 @@ export async function exportSalesReportToPDF(
       (day.orders?.length || day.orders || 0).toString(),
       `${settings.currencySymbol || '£'}${day.subtotal.toFixed(2)}`,
       `${settings.currencySymbol || '£'}${day.vat.toFixed(2)}`,
-      `${settings.currencySymbol || '£'}${day.serviceCharge?.toFixed(2) || '0.00'}`,
       `${settings.currencySymbol || '£'}${day.total.toFixed(2)}`,
     ]);
 
     autoTable(doc, {
       startY: yPos,
-      head: [['Date', 'Orders', 'Subtotal', 'VAT', 'Service', 'Total']],
+      head: [['Date', 'Orders', 'Subtotal', 'VAT', 'Total']],
       body: breakdownRows,
       theme: 'striped',
       headStyles: {
@@ -220,8 +216,7 @@ export async function exportSalesReportToPDF(
       columnStyles: {
         2: { halign: 'right' },
         3: { halign: 'right' },
-        4: { halign: 'right' },
-        5: { halign: 'right', fontStyle: 'bold' },
+        4: { halign: 'right', fontStyle: 'bold' },
       },
     });
   }

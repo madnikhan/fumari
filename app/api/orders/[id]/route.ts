@@ -98,7 +98,7 @@ export async function PUT(
     }
 
     // Prevent editing if order has payments (unless it's just notes/status)
-    if (existingOrder.payments.length > 0 && (items || vatRate !== undefined || serviceCharge !== undefined || discount !== undefined)) {
+    if (existingOrder.payments.length > 0 && (items || vatRate !== undefined || discount !== undefined)) {
       return NextResponse.json(
         { error: 'Cannot modify order with existing payments. Only notes and status can be updated.' },
         { status: 400 }
@@ -147,19 +147,17 @@ export async function PUT(
       finalVatRate = vatRate;
     }
 
-    // Update service charge if provided
-    if (serviceCharge !== undefined) {
-      finalServiceCharge = serviceCharge;
-    }
+    // Service charge removed - always set to 0
+    finalServiceCharge = 0;
 
     // Update discount if provided
     if (discount !== undefined) {
       finalDiscount = discount;
     }
 
-    // Recalculate totals
+    // Recalculate totals (no service charge)
     const vatAmount = calculateVAT(subtotal, finalVatRate);
-    const totalBeforeDiscount = calculateTotalWithVAT(subtotal, finalVatRate) + finalServiceCharge;
+    const totalBeforeDiscount = calculateTotalWithVAT(subtotal, finalVatRate);
     const total = Math.max(0, totalBeforeDiscount - finalDiscount);
 
     // Update order

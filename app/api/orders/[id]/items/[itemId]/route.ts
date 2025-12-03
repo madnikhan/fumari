@@ -68,7 +68,7 @@ export async function PUT(
     }
 
     const vatAmount = calculateVAT(subtotal, order.vatRate);
-    const totalBeforeDiscount = calculateTotalWithVAT(subtotal, order.vatRate) + order.serviceCharge;
+    const totalBeforeDiscount = calculateTotalWithVAT(subtotal, order.vatRate); // No service charge
     const total = Math.max(0, totalBeforeDiscount - order.discount);
 
     // Update order totals
@@ -161,7 +161,7 @@ export async function DELETE(
     }
 
     const vatAmount = calculateVAT(subtotal, order.vatRate);
-    const totalBeforeDiscount = calculateTotalWithVAT(subtotal, order.vatRate) + order.serviceCharge;
+    const totalBeforeDiscount = calculateTotalWithVAT(subtotal, order.vatRate); // No service charge
     const total = Math.max(0, totalBeforeDiscount - order.discount);
 
     // Update order totals
