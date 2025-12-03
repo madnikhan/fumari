@@ -1,75 +1,71 @@
-# Supabase Connection Fix
+# Fix Supabase Database Connection on Vercel
 
-## Issue
-The connection string is being read, but Prisma can't reach the database server.
-
-## Solutions
-
-### Option 1: Use Connection Pooling (Recommended)
-
-Supabase recommends using connection pooling for better performance and reliability.
-
-1. Go to: https://supabase.com/dashboard/project/nnsqtbdlwgbxqguf/settings/database
-2. Scroll to **"Connection string"**
-3. Click **"Connection pooling"** tab (NOT "URI")
-4. Copy the connection string (uses port 6543)
-5. Replace `[YOUR-PASSWORD]` with your password
-6. Add `?sslmode=require` at the end
-
-**Format:**
+## Error
 ```
-postgresql://postgres.xxxxx:yourpassword@aws-0-eu-west-2.pooler.supabase.com:6543/postgres?sslmode=require
+Can't reach database server at `aws-1-us-east-2.pooler.supabase.com:5432`
 ```
 
-### Option 2: URL Encode Password
+## Possible Causes
 
-If your password contains special characters (like `!`, `@`, `#`, etc.), they need to be URL encoded.
+### 1. Supabase Project is Paused (Most Common)
+Free tier Supabase projects pause after inactivity.
 
-**Special characters in password:**
-- `!` becomes `%21`
-- `@` becomes `%40`
-- `#` becomes `%23`
-- `$` becomes `%24`
-- `%` becomes `%25`
-- `&` becomes `%26`
-- `*` becomes `%2A`
-- `(` becomes `%28`
-- `)` becomes `%29`
-- `+` becomes `%2B`
-- `=` becomes `%3D`
+**Fix:**
+1. Go to [Supabase Dashboard](https://supabase.com/dashboard)
+2. Find your project
+3. If it shows "Paused" or "Inactive", click **"Resume"** or **"Restore"**
+4. Wait 1-2 minutes for it to start
+5. Try logging in again
 
-**Example:**
-If password is `Made!78601in`, URL encoded it becomes `Made%2178601in`
+### 2. Connection String Missing `?sslmode=require`
+Vercel needs SSL mode specified.
 
-**Updated connection string:**
+**Check:**
+1. Go to Vercel → Settings → Environment Variables
+2. Find `DATABASE_URL`
+3. Make sure it ends with `?sslmode=require`
+
+**Should be:**
 ```
-postgresql://postgres:Made%2178601in@db.nnsqtbdlwbgytgbxqguf.supabase.co:5432/postgres?sslmode=require
+postgresql://postgres.iicsqunmzelpqvlotrna:Made!78601in@aws-1-us-east-2.pooler.supabase.com:5432/postgres?sslmode=require
 ```
 
-### Option 3: Reset Database Password
+### 3. Wrong Connection String
+Make sure you're using the **Connection Pooling** string, not Direct connection.
 
-If connection still fails:
+**Get Correct String:**
+1. Go to Supabase → Project Settings → Database
+2. Under "Connection string", select **"Session mode"** (pooler)
+3. Copy the connection string
+4. Make sure it has `pooler.supabase.com` (not `connect.supabase.com`)
+5. Add `?sslmode=require` at the end
+6. Update in Vercel → Environment Variables
+7. Redeploy
 
-1. Go to Supabase Dashboard → Settings → Database
-2. Click **"Reset database password"**
-3. Set a new password (avoid special characters or URL encode them)
-4. Update `.env.local` with new password
+### 4. Database Tables Don't Exist
+If the project was paused/resumed, tables might need to be recreated.
 
-## Test Connection
-
-After updating `.env.local`, test the connection:
-
+**Fix:**
+Run locally:
 ```bash
 npm run db:push
-```
-
-If successful, you'll see:
-```
-✔ Your database is now in sync with your Prisma schema.
-```
-
-Then seed:
-```bash
 npm run db:seed
 ```
 
+Then verify in Supabase Table Editor that tables exist.
+
+## Quick Checklist
+
+- [ ] Supabase project is **Active** (not paused)
+- [ ] `DATABASE_URL` in Vercel ends with `?sslmode=require`
+- [ ] Using **pooler** connection (not direct)
+- [ ] Connection string is correct
+- [ ] Tables exist in Supabase
+- [ ] Redeployed Vercel after changing env vars
+
+## Test Connection
+
+After fixing, test by:
+1. Try logging in
+2. Check Vercel Runtime Logs for connection errors
+3. If still failing, check Supabase Dashboard → Database → Connection Pooling status
