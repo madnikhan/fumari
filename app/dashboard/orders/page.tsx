@@ -361,23 +361,34 @@ export default function OrdersPage() {
   };
 
   const handleDeleteOrder = async (orderId: string) => {
+    if (!orderId) {
+      showToast('Invalid order ID', 'error');
+      return;
+    }
+
     setSubmitting(true);
     try {
+      console.log('Deleting order:', orderId);
       const response = await fetch(`/api/orders/${orderId}`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
+
+      const data = await response.json();
 
       if (response.ok) {
         showToast('Order deleted successfully!', 'success');
         setShowDeleteConfirm(null);
         fetchOrders();
       } else {
-        const error = await response.json();
-        showToast(`Error: ${error.error || 'Failed to delete order'}`, 'error');
+        console.error('Delete error response:', data);
+        showToast(`Error: ${data.error || 'Failed to delete order'}`, 'error');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting order:', error);
-      showToast('Failed to delete order. Please try again.', 'error');
+      showToast(`Failed to delete order: ${error.message || 'Please try again'}`, 'error');
     } finally {
       setSubmitting(false);
     }
@@ -880,7 +891,11 @@ export default function OrdersPage() {
                   </button>
                 )}
                 <button 
-                  onClick={() => setShowDeleteConfirm(order.id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowDeleteConfirm(order.id);
+                  }}
                   className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium flex items-center gap-1"
                 >
                   <Trash2 className="w-3 h-3" />
@@ -1218,8 +1233,14 @@ export default function OrdersPage() {
                 Cancel
               </button>
               <button
-                onClick={() => handleDeleteOrder(showDeleteConfirm)}
-                disabled={submitting}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (showDeleteConfirm) {
+                    handleDeleteOrder(showDeleteConfirm);
+                  }
+                }}
+                disabled={submitting || !showDeleteConfirm}
                 className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {submitting ? 'Deleting...' : 'Delete'}

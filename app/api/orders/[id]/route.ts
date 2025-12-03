@@ -242,15 +242,19 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    console.log('DELETE request for order:', params.id);
+
     // Check if order exists
     const existingOrder = await prisma.order.findUnique({
       where: { id: params.id },
       include: {
         payments: true,
+        items: true,
       },
     });
 
     if (!existingOrder) {
+      console.log('Order not found:', params.id);
       return NextResponse.json(
         { error: 'Order not found' },
         { status: 404 }
@@ -259,22 +263,38 @@ export async function DELETE(
 
     // Prevent deletion if order has payments
     if (existingOrder.payments.length > 0) {
+      console.log('Cannot delete order with payments:', existingOrder.payments.length);
       return NextResponse.json(
-        { error: 'Cannot delete order with existing payments' },
+        { error: 'Cannot delete order with existing payments. Please refund payments first.' },
         { status: 400 }
       );
     }
 
-    // Delete order (items will be deleted automatically due to cascade)
+    console.log('Deleting order:', params.id, 'with', existingOrder.items.length, 'items');
+
+    // Delete order items first (if not cascading)
+    await prisma.orderItem.deleteMany({
+      where: { orderId: params.id },
+    });
+
+    // Delete order
     await prisma.order.delete({
       where: { id: params.id },
     });
 
+    console.log('Order deleted successfully:', params.id);
     return NextResponse.json({ message: 'Order deleted successfully' });
   } catch (error: any) {
     console.error('Error deleting order:', error);
+    console.error('Error stack:', error.stack);
+    console.error('Error details:', JSON.stringify(error, null, 2));
+    
     return NextResponse.json(
-      { error: 'Failed to delete order', details: error.message },
+      { 
+        error: 'Failed to delete order', 
+        details: error.message,
+        code: error.code,
+      },
       { status: 500 }
     );
   }
