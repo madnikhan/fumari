@@ -31,7 +31,19 @@ const createPrismaClient = () => {
   try {
     const client = new PrismaClient({
       log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+      datasources: {
+        db: {
+          url: process.env.DATABASE_URL,
+        },
+      },
     })
+    
+    // Enable foreign keys for SQLite
+    if (process.env.DATABASE_URL?.startsWith('file:')) {
+      client.$executeRaw`PRAGMA foreign_keys = ON`.catch(() => {
+        // Ignore if already enabled or not SQLite
+      })
+    }
     
     // Log DATABASE_URL status (without exposing the full URL)
     if (process.env.DATABASE_URL) {
