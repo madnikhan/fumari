@@ -15,10 +15,42 @@ export async function GET(request: Request) {
       );
     }
 
-    // Get waiter's assigned tables (tables where assignedWaiterId matches this waiter)
+    // Find the Staff record for this User (match by email or username)
+    const user = await prisma.user.findUnique({
+      where: { id: session.userId },
+      select: { email: true, username: true },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      );
+    }
+
+    // Find Staff member by email or name matching username
+    const staff = await prisma.staff.findFirst({
+      where: {
+        OR: [
+          { email: user.email },
+          { name: { contains: user.username, mode: 'insensitive' } },
+        ],
+        active: true,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!staff) {
+      // No staff record found for this user - return empty notifications
+      return NextResponse.json([]);
+    }
+
+    // Get waiter's assigned tables (tables where assignedWaiterId matches the Staff ID)
     const assignedTables = await prisma.table.findMany({
       where: {
-        assignedWaiterId: session.userId,
+        assignedWaiterId: staff.id,
       },
       select: {
         id: true,
