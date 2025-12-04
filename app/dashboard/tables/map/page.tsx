@@ -541,10 +541,59 @@ export default function TableMapPage() {
                 <span className="text-gray-300">Current Guests:</span>
                 <span className="font-medium text-white">{selectedTable.currentGuests}</span>
               </div>
-              {selectedTable.assignedWaiter && (
+              {/* Waiter Assignment */}
+              {assigningWaiter ? (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Assign Waiter:</span>
+                  </div>
+                  <select
+                    value={selectedWaiterId}
+                    onChange={(e) => setSelectedWaiterId(e.target.value)}
+                    className="w-full px-4 py-2 bg-black border-2 border-[#800020] rounded-lg text-white focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37]"
+                  >
+                    <option value="">No Waiter</option>
+                    {staff.map((waiter) => (
+                      <option key={waiter.id} value={waiter.id}>
+                        {waiter.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleWaiterAssignment(selectedTable.id, selectedWaiterId || null)}
+                      className="flex-1 px-4 py-2 bg-[#1a4d2e] text-white rounded-lg hover:bg-[#2d7a4f]"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => {
+                        setAssigningWaiter(false);
+                        setSelectedWaiterId('');
+                      }}
+                      className="px-4 py-2 border-2 border-[#800020] rounded-lg text-white hover:bg-[#800020]"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
                 <div className="flex items-center justify-between">
                   <span className="text-gray-300">Waiter:</span>
-                  <span className="font-medium text-white">{selectedTable.assignedWaiter.name}</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="font-medium text-white">
+                      {selectedTable.assignedWaiter ? selectedTable.assignedWaiter.name : 'Not assigned'}
+                    </span>
+                    <button
+                      onClick={() => {
+                        setAssigningWaiter(true);
+                        setSelectedWaiterId(selectedTable.assignedWaiter ? '' : '');
+                      }}
+                      className="px-2 py-1 text-xs bg-[#1a4d2e] text-white rounded hover:bg-[#2d7a4f] transition-colors"
+                    >
+                      {selectedTable.assignedWaiter ? 'Change' : 'Assign'}
+                    </button>
+                  </div>
                 </div>
               )}
               {(() => {
