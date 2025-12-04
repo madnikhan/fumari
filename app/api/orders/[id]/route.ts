@@ -242,10 +242,10 @@ export async function PUT(
 // Delete an order
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ id: string }> | { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id: orderId } = await Promise.resolve(params);
+    const { id: orderId } = await params;
     console.log('DELETE request for order:', orderId);
 
     // Check if order exists
