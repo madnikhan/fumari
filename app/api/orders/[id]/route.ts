@@ -245,7 +245,14 @@ export async function DELETE(
 ) {
   try {
     const { id: orderId } = await params;
-    console.log('DELETE request for order:', orderId);
+    console.log('[DELETE] Request for order:', orderId);
+
+    if (!orderId) {
+      return NextResponse.json(
+        { error: 'Order ID is required' },
+        { status: 400 }
+      );
+    }
 
     // Check if order exists
     const existingOrder = await prisma.order.findUnique({
@@ -257,42 +264,71 @@ export async function DELETE(
     });
 
     if (!existingOrder) {
-      console.log('Order not found:', orderId);
+      console.log('[DELETE] Order not found:', orderId);
       return NextResponse.json(
         { error: 'Order not found' },
         { status: 404 }
       );
     }
 
-    // Warn if order has payments (but allow deletion - payments will be cascade deleted)
-    if (existingOrder.payments.length > 0) {
-      console.log('Warning: Deleting order with payments:', existingOrder.payments.length, '- payments will be cascade deleted');
-    }
-
-    console.log('Deleting order:', orderId, 'with', existingOrder.items.length, 'items');
-
-    // Delete order items first (if not cascading)
-    await prisma.orderItem.deleteMany({
-      where: { orderId: orderId },
+    console.log('[DELETE] Order found:', {
+      id: orderId,
+      items: existingOrder.items.length,
+      payments: existingOrder.payments.length,
     });
 
+    // Warn if order has payments (but allow deletion - payments will be cascade deleted)
+    if (existingOrder.payments.length > 0) {
+      console.log('[DELETE] Warning: Order has', existingOrder.payments.length, 'payments - will be cascade deleted');
+    }
+
+    // Delete order items first (explicitly, even though cascade should handle it)
+    if (existingOrder.items.length > 0) {
+      console.log('[DELETE] Deleting', existingOrder.items.length, 'order items');
+      await prisma.orderItem.deleteMany({
+        where: { orderId: orderId },
+      });
+    }
+
+    // Delete payments explicitly (even though cascade should handle it)
+    if (existingOrder.payments.length > 0) {
+      console.log('[DELETE] Deleting', existingOrder.payments.length, 'payments');
+      await prisma.payment.deleteMany({
+        where: { orderId: orderId },
+      });
+    }
+
     // Delete order
+    console.log('[DELETE] Deleting order:', orderId);
     await prisma.order.delete({
       where: { id: orderId },
     });
 
-    console.log('Order deleted successfully:', orderId);
-    return NextResponse.json({ message: 'Order deleted successfully' });
+    console.log('[DELETE] Order deleted successfully:', orderId);
+    return NextResponse.json({ 
+      success: true,
+      message: 'Order deleted successfully' 
+    });
   } catch (error: any) {
-    console.error('Error deleting order:', error);
-    console.error('Error stack:', error.stack);
-    console.error('Error details:', JSON.stringify(error, null, 2));
+    console.error('[DELETE] Error deleting order:', error);
+    console.error('[DELETE] Error name:', error.name);
+    console.error('[DELETE] Error message:', error.message);
+    console.error('[DELETE] Error code:', error.code);
+    console.error('[DELETE] Error stack:', error.stack);
+    
+    // Try to stringify error for more details
+    try {
+      console.error('[DELETE] Error details:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
+    } catch (e) {
+      console.error('[DELETE] Could not stringify error');
+    }
     
     return NextResponse.json(
       { 
         error: 'Failed to delete order', 
-        details: error.message,
-        code: error.code,
+        details: error.message || 'Unknown error',
+        code: error.code || 'UNKNOWN',
+        name: error.name || 'Error',
       },
       { status: 500 }
     );
