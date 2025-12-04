@@ -36,14 +36,23 @@ interface Reservation {
   tableId?: string;
 }
 
+interface Staff {
+  id: string;
+  name: string;
+  role: string;
+}
+
 export default function TableMapPage() {
   const [tables, setTables] = useState<Table[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [staff, setStaff] = useState<Staff[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
   const [filter, setFilter] = useState<string>('all');
   const [editingGuests, setEditingGuests] = useState<boolean>(false);
   const [guestCount, setGuestCount] = useState<number>(0);
+  const [assigningWaiter, setAssigningWaiter] = useState<boolean>(false);
+  const [selectedWaiterId, setSelectedWaiterId] = useState<string>('');
 
   useEffect(() => {
     fetchTables();
@@ -332,6 +341,31 @@ export default function TableMapPage() {
     } catch (error) {
       console.error('Error updating guest count:', error);
       showToast('Failed to update guest count', 'error');
+    }
+  };
+
+  const handleWaiterAssignment = async (tableId: string, waiterId: string | null) => {
+    try {
+      const response = await fetch(`/api/tables/${tableId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ assignedWaiterId: waiterId }),
+      });
+
+      if (response.ok) {
+        fetchTables();
+        const updatedTable = await response.json();
+        setSelectedTable(updatedTable);
+        setAssigningWaiter(false);
+        setSelectedWaiterId('');
+        showToast(waiterId ? 'Waiter assigned successfully' : 'Waiter unassigned successfully', 'success');
+      } else {
+        const error = await response.json();
+        showToast(`Error: ${error.error || 'Failed to assign waiter'}`, 'error');
+      }
+    } catch (error) {
+      console.error('Error assigning waiter:', error);
+      showToast('Failed to assign waiter', 'error');
     }
   };
 

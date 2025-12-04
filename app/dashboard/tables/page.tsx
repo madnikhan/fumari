@@ -18,18 +18,40 @@ interface Table {
   };
 }
 
+interface Staff {
+  id: string;
+  name: string;
+  role: string;
+}
+
 export default function TablesPage() {
   const [tables, setTables] = useState<Table[]>([]);
+  const [staff, setStaff] = useState<Staff[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('all');
   const [editingTable, setEditingTable] = useState<Table | null>(null);
   const [guestCount, setGuestCount] = useState<number>(0);
+  const [assigningWaiter, setAssigningWaiter] = useState<string | null>(null);
+  const [selectedWaiterId, setSelectedWaiterId] = useState<string>('');
 
   useEffect(() => {
     fetchTables();
+    fetchStaff();
     const interval = setInterval(fetchTables, 5000); // Refresh every 5 seconds
     return () => clearInterval(interval);
   }, []);
+
+  const fetchStaff = async () => {
+    try {
+      const response = await fetch('/api/staff');
+      if (response.ok) {
+        const data = await response.json();
+        setStaff(Array.isArray(data) ? data.filter((s: Staff) => s.role === 'waiter' || s.role === 'server') : []);
+      }
+    } catch (error) {
+      console.error('Error fetching staff:', error);
+    }
+  };
 
   const fetchTables = async () => {
     try {
@@ -141,6 +163,28 @@ export default function TablesPage() {
     setGuestCount(table.currentGuests);
   };
 
+  const handleWaiterAssignment = async (tableId: string, waiterId: string | null) => {
+    try {
+      const response = await fetch(`/api/tables/${tableId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ assignedWaiterId: waiterId }),
+      });
+
+      if (response.ok) {
+        fetchTables();
+        setAssigningWaiter(null);
+        showToast(waiterId ? 'Waiter assigned successfully' : 'Waiter unassigned successfully', 'success');
+      } else {
+        const error = await response.json();
+        showToast(`Error: ${error.error || 'Failed to assign waiter'}`, 'error');
+      }
+    } catch (error) {
+      console.error('Error assigning waiter:', error);
+      showToast('Failed to assign waiter', 'error');
+    }
+  };
+
   const getAvailableStatuses = (currentStatus: string) => {
     switch (currentStatus) {
       case 'available':
@@ -245,6 +289,51 @@ export default function TablesPage() {
             </div>
 
             <div className="mt-4 pt-4 border-t border-[#800020] space-y-2">
+              {/* Assign Waiter */}
+              {assigningWaiter === table.id ? (
+                <div className="space-y-2">
+                  <select
+                    value={selectedWaiterId}
+                    onChange={(e) => setSelectedWaiterId(e.target.value)}
+                    className="w-full px-3 py-2 bg-black border-2 border-[#800020] rounded-lg text-white text-sm focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37]"
+                  >
+                    <option value="">No Waiter</option>
+                    {staff.map((waiter) => (
+                      <option key={waiter.id} value={waiter.id}>
+                        {waiter.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleWaiterAssignment(table.id, selectedWaiterId || null)}
+                      className="flex-1 px-3 py-2 bg-[#1a4d2e] text-white rounded-lg hover:bg-[#2d7a4f] transition-colors text-sm font-medium"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => {
+                        setAssigningWaiter(null);
+                        setSelectedWaiterId('');
+                      }}
+                      className="px-3 py-2 border-2 border-[#800020] rounded-lg text-white hover:bg-[#800020] transition-colors text-sm"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setAssigningWaiter(table.id);
+                    setSelectedWaiterId(table.assignedWaiter ? '' : '');
+                  }}
+                  className="w-full px-4 py-2 bg-[#1a4d2e] text-white rounded-lg hover:bg-[#2d7a4f] transition-colors font-medium text-sm flex items-center justify-center space-x-2"
+                >
+                  <Users className="w-4 h-4" />
+                  <span>{table.assignedWaiter ? 'Change Waiter' : 'Assign Waiter'}</span>
+                </button>
+              )}
               {/* Quick Status Actions */}
               <div className="grid grid-cols-2 gap-2">
                 {getAvailableStatuses(table.status).map((status) => (
