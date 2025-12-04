@@ -5,13 +5,12 @@ import { calculateVAT, calculateTotalWithVAT, getStandardVATRate } from '@/lib/v
 // Get a single order
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ id: string }> | { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await Promise.resolve(params).then(p => typeof p === 'object' && 'then' in p ? p : Promise.resolve(p));
-    const orderId = typeof id === 'string' ? id : (await id);
+    const { id } = await params;
     const order = await prisma.order.findUnique({
-      where: { id: orderId },
+      where: { id },
       include: {
         table: {
           select: {
@@ -69,10 +68,10 @@ export async function GET(
 // Update an order
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ id: string }> | { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id: orderId } = await Promise.resolve(params);
+    const { id: orderId } = await params;
     const body = await request.json();
     const {
       items,
