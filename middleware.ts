@@ -114,7 +114,39 @@ export function middleware(request: NextRequest) {
       return NextResponse.next();
     }
     
-    // Other dashboard routes require regular session
+    // Waiter notifications page - allow waiters (role: 'waiter')
+    if (pathname.startsWith('/dashboard/waiter/notifications')) {
+      const sessionCookie = request.cookies.get('session');
+      
+      if (!sessionCookie) {
+        const loginUrl = new URL('/waiter-login', request.url);
+        loginUrl.searchParams.set('redirect', pathname);
+        return NextResponse.redirect(loginUrl);
+      }
+
+      try {
+        const sessionData = JSON.parse(sessionCookie.value);
+        
+        // Check if session expired
+        if (sessionData.expiresAt < Date.now()) {
+          const loginUrl = new URL('/waiter-login', request.url);
+          loginUrl.searchParams.set('redirect', pathname);
+          loginUrl.searchParams.set('expired', 'true');
+          return NextResponse.redirect(loginUrl);
+        }
+        
+        // Allow waiters to access their notifications
+        return NextResponse.next();
+      } catch (error) {
+        // Invalid session cookie
+        const loginUrl = new URL('/waiter-login', request.url);
+        loginUrl.searchParams.set('redirect', pathname);
+        return NextResponse.redirect(loginUrl);
+      }
+    }
+    
+    // Restrict waiters from accessing other dashboard routes
+    // Waiters should only access /dashboard/waiter/notifications
     const sessionCookie = request.cookies.get('session');
     
     if (!sessionCookie) {
@@ -132,6 +164,13 @@ export function middleware(request: NextRequest) {
         loginUrl.searchParams.set('redirect', pathname);
         loginUrl.searchParams.set('expired', 'true');
         return NextResponse.redirect(loginUrl);
+      }
+      
+      // Check if this is a waiter trying to access non-waiter routes
+      // Waiters have role: 'waiter' (from Staff table)
+      if (sessionData.role === 'waiter' && !pathname.startsWith('/dashboard/waiter/notifications')) {
+        // Redirect waiters to their notifications page
+        return NextResponse.redirect(new URL('/dashboard/waiter/notifications', request.url));
       }
     } catch (error) {
       // Invalid session cookie

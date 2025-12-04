@@ -141,9 +141,13 @@ export default function DashboardLayout({
             
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-1">
-              <NavLink href="/dashboard" icon={<Home className="w-4 h-4" />}>
-                Dashboard
-              </NavLink>
+              {/* Only show Dashboard link for non-waiters */}
+              {user.role !== 'waiter' && (
+                <NavLink href="/dashboard" icon={<Home className="w-4 h-4" />}>
+                  Dashboard
+                </NavLink>
+              )}
+              {/* Show Notifications link for waiters, or all users */}
               <NavLink href="/dashboard/waiter/notifications" icon={<Bell className="w-4 h-4" />}>
                 Notifications
               </NavLink>
@@ -206,9 +210,12 @@ export default function DashboardLayout({
           {mobileMenuOpen && (
             <div className="lg:hidden pb-4 border-t border-[#7A3E32] mt-2 pt-4">
               <div className="flex flex-col space-y-1">
-                <MobileNavLink href="/dashboard" icon={<Home className="w-5 h-5" />} onClick={() => setMobileMenuOpen(false)}>
-                  Dashboard
-                </MobileNavLink>
+                {/* Only show Dashboard link for non-waiters */}
+                {user.role !== 'waiter' && (
+                  <MobileNavLink href="/dashboard" icon={<Home className="w-5 h-5" />} onClick={() => setMobileMenuOpen(false)}>
+                    Dashboard
+                  </MobileNavLink>
+                )}
                 <MobileNavLink href="/dashboard/waiter/notifications" icon={<Bell className="w-5 h-5" />} onClick={() => setMobileMenuOpen(false)}>
                   Notifications
                 </MobileNavLink>

@@ -1,11 +1,42 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Utensils, ChefHat, Monitor, Bell, Settings, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
-  const categories = [
+  const router = useRouter();
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  const checkSession = async () => {
+    try {
+      const response = await fetch('/api/auth/session');
+      const data = await response.json();
+      
+      if (data.authenticated) {
+        setUserRole(data.user?.role || null);
+        
+        // Redirect waiters to their notifications page
+        if (data.user?.role === 'waiter') {
+          router.push('/dashboard/waiter/notifications');
+          return;
+        }
+      }
+    } catch (error) {
+      console.error('Error checking session:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filter categories based on user role
+  const allCategories = [
     {
       id: 'tables',
       title: 'Table Management',
@@ -52,6 +83,36 @@ export default function DashboardPage() {
       hoverColor: 'hover:from-[#3A3B3F] hover:to-[#2A2B2F]',
     },
   ];
+
+  // Filter categories - waiters should not see admin sections
+  const categories = userRole === 'waiter' 
+    ? [] // Waiters are redirected, but if they somehow get here, show nothing
+    : allCategories;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#212226] flex items-center justify-center">
+        <div className="text-[#FFE176] text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  // If waiter, they should be redirected, but show message just in case
+  if (userRole === 'waiter') {
+    return (
+      <div className="min-h-screen bg-[#212226] flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-[#FFE176] text-xl mb-4">Redirecting to notifications...</p>
+          <Link 
+            href="/dashboard/waiter/notifications"
+            className="text-blue-400 hover:underline"
+          >
+            Go to Notifications
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#212226] via-[#2A2B2F] to-[#212226]">
