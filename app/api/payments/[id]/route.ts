@@ -4,11 +4,12 @@ import { prisma } from '@/lib/prisma-client';
 // Get a single payment
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const payment = await prisma.payment.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         order: {
           include: {
@@ -42,14 +43,15 @@ export async function GET(
 // Update payment status (e.g., from Handepay webhook)
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     const { status, transactionId, handepayData } = body;
 
     const payment = await prisma.payment.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!payment) {
@@ -65,7 +67,7 @@ export async function PATCH(
     if (handepayData) updateData.handepayData = JSON.stringify(handepayData);
 
     const updatedPayment = await prisma.payment.update({
-      where: { id: params.id },
+      where: { id },
       data: updateData,
       include: {
         order: {
@@ -110,11 +112,12 @@ export async function PATCH(
 // Delete payment (refund scenario)
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const payment = await prisma.payment.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!payment) {
@@ -127,7 +130,7 @@ export async function DELETE(
     // For card payments, mark as refunded instead of deleting
     if (payment.method === 'handepay_card' || payment.method === 'card') {
       await prisma.payment.update({
-        where: { id: params.id },
+        where: { id },
         data: { status: 'refunded' },
       });
       return NextResponse.json({ message: 'Payment marked as refunded' });
@@ -135,7 +138,7 @@ export async function DELETE(
 
     // For cash payments, allow deletion
     await prisma.payment.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: 'Payment deleted successfully' });

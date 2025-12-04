@@ -38,18 +38,24 @@ export async function GET(request: Request) {
       });
 
       if (user) {
-        const staffByEmail = await prisma.staff.findFirst({
+        // SQLite doesn't support 'mode: insensitive', so we'll search case-insensitively
+        // by fetching all active staff and matching in JavaScript
+        const allActiveStaff = await prisma.staff.findMany({
           where: {
-            OR: [
-              { email: user.email },
-              { name: { contains: user.username, mode: 'insensitive' } },
-            ],
             active: true,
           },
           select: {
             id: true,
+            email: true,
+            name: true,
           },
         });
+
+        // Find matching staff (case-insensitive name match or email match)
+        const staffByEmail = allActiveStaff.find(s => 
+          (s.email && s.email.toLowerCase() === user.email?.toLowerCase()) ||
+          s.name.toLowerCase().includes(user.username.toLowerCase())
+        );
 
         if (staffByEmail) {
           staffId = staffByEmail.id;
