@@ -34,15 +34,6 @@ export default function DashboardPage() {
       hoverColor: 'hover:from-[#215632] hover:to-[#1B4527]',
     },
     {
-      id: 'buzzer',
-      title: 'Buzzer Display',
-      description: 'Big screen display for service requests',
-      icon: Bell,
-      href: '/dashboard/buzzer-display',
-      color: 'from-[#9B4E3F] to-[#7A3E32]',
-      hoverColor: 'hover:from-[#B85E4F] hover:to-[#9B4E3F]',
-    },
-    {
       id: 'admin',
       title: 'Admin Dashboard',
       description: 'Menu, analytics, staff, and settings',

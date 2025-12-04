@@ -30,9 +30,19 @@ export async function POST(request: Request) {
       );
     }
 
-    // Verify table exists
+    // Verify table exists and get assigned waiter
     const table = await prisma.table.findUnique({
       where: { id: tableId },
+      include: {
+        assignedWaiter: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+      },
     });
 
     if (!table) {
@@ -54,12 +64,25 @@ export async function POST(request: Request) {
           select: {
             number: true,
             status: true,
+            assignedWaiter: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },
     });
 
-    return NextResponse.json(buzzerRequest, { status: 201 });
+    // If table has assigned waiter, the notification will be shown on their phone
+    // The waiter can view notifications at /dashboard/waiter/notifications
+
+    return NextResponse.json({
+      ...buzzerRequest,
+      waiterAssigned: !!table.assignedWaiter,
+      waiterName: table.assignedWaiter?.name || null,
+    }, { status: 201 });
   } catch (error: any) {
     console.error('Error creating buzzer request:', error);
     return NextResponse.json(

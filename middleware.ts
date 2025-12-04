@@ -12,6 +12,7 @@ export function middleware(request: NextRequest) {
     '/kitchen/login',
     '/dashboard/kiosk',
     '/dashboard/kitchen', // Kitchen panel is public (no login required)
+    '/dashboard/waiter/notifications', // Waiter notifications (requires login but handled by API)
   ];
 
   // Public route patterns (for dynamic routes)
