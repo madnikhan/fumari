@@ -144,6 +144,9 @@ export default function DashboardLayout({
               <NavLink href="/dashboard" icon={<Home className="w-4 h-4" />}>
                 Dashboard
               </NavLink>
+              <NavLink href="/dashboard/waiter/notifications" icon={<Bell className="w-4 h-4" />}>
+                Notifications
+              </NavLink>
               
               {/* Fullscreen Button */}
               <button
@@ -205,6 +208,9 @@ export default function DashboardLayout({
               <div className="flex flex-col space-y-1">
                 <MobileNavLink href="/dashboard" icon={<Home className="w-5 h-5" />} onClick={() => setMobileMenuOpen(false)}>
                   Dashboard
+                </MobileNavLink>
+                <MobileNavLink href="/dashboard/waiter/notifications" icon={<Bell className="w-5 h-5" />} onClick={() => setMobileMenuOpen(false)}>
+                  Notifications
                 </MobileNavLink>
                 
                 {/* Mobile Fullscreen Button */}
