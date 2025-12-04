@@ -74,7 +74,7 @@ export async function PUT(
 
     // Update order totals
     await prisma.order.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         subtotal,
         vatAmount,
@@ -126,10 +126,10 @@ export async function DELETE(
 
     // Check if item exists
     const orderItem = await prisma.orderItem.findUnique({
-      where: { id: params.itemId },
+      where: { id: itemId },
     });
 
-    if (!orderItem || orderItem.orderId !== params.id) {
+    if (!orderItem || orderItem.orderId !== id) {
       return NextResponse.json(
         { error: 'Order item not found' },
         { status: 404 }
@@ -169,7 +169,7 @@ export async function DELETE(
 
     // Update order totals
     await prisma.order.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         subtotal,
         vatAmount,
