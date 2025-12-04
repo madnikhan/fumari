@@ -5,15 +5,16 @@ import { calculateVAT, calculateTotalWithVAT } from '@/lib/vat-calculations';
 // Update an order item
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string; itemId: string } }
+  { params }: { params: Promise<{ id: string; itemId: string }> }
 ) {
   try {
+    const { id, itemId } = await params;
     const body = await request.json();
     const { quantity, price, specialInstructions } = body;
 
     // Check if order exists
     const order = await prisma.order.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         items: true,
         payments: true,
@@ -49,7 +50,7 @@ export async function PUT(
 
     // Update item
     const updatedItem = await prisma.orderItem.update({
-      where: { id: params.itemId },
+      where: { id: itemId },
       data: {
         quantity: quantity !== undefined ? quantity : orderItem.quantity,
         price: price !== undefined ? price : orderItem.price,
@@ -59,7 +60,7 @@ export async function PUT(
 
     // Recalculate order totals
     const allItems = await prisma.orderItem.findMany({
-      where: { orderId: params.id },
+      where: { orderId: id },
     });
 
     let subtotal = 0;
@@ -95,12 +96,14 @@ export async function PUT(
 // Delete an order item
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string; itemId: string } }
+  { params }: { params: Promise<{ id: string; itemId: string }> }
 ) {
   try {
+    const { id, itemId } = await params;
+    
     // Check if order exists
     const order = await prisma.order.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         payments: true,
       },
@@ -135,7 +138,7 @@ export async function DELETE(
 
     // Prevent deleting the last item
     const itemCount = await prisma.orderItem.count({
-      where: { orderId: params.id },
+      where: { orderId: id },
     });
 
     if (itemCount <= 1) {
@@ -147,12 +150,12 @@ export async function DELETE(
 
     // Delete item
     await prisma.orderItem.delete({
-      where: { id: params.itemId },
+      where: { id: itemId },
     });
 
     // Recalculate order totals
     const remainingItems = await prisma.orderItem.findMany({
-      where: { orderId: params.id },
+      where: { orderId: id },
     });
 
     let subtotal = 0;
