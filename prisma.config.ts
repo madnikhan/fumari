@@ -23,9 +23,16 @@ const getDatabaseConfig = () => {
     }
     // If it's a file:// URL, use SQLite
     if (databaseUrl.startsWith('file:')) {
+      // Convert relative paths to absolute
+      let dbPath = databaseUrl;
+      if (databaseUrl.startsWith('file:./') || databaseUrl.startsWith('file:../')) {
+        const relativePath = databaseUrl.replace('file:', '');
+        const absolutePath = path.join(process.cwd(), relativePath);
+        dbPath = `file:${absolutePath}`;
+      }
       return {
         provider: 'sqlite',
-        url: databaseUrl,
+        url: dbPath,
         schema: 'prisma/schema.prisma',
       };
     }
