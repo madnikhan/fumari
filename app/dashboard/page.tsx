@@ -8,12 +8,21 @@ export default function DashboardPage() {
   const categories = [
     {
       id: 'tables',
-      title: 'Tables System',
-      description: 'Manage tables, reservations, and take orders',
+      title: 'Table Management',
+      description: 'Manage tables, assign waiters, and view table status',
       icon: Utensils,
-      href: '/dashboard/tables-system',
+      href: '/dashboard/tables',
       color: 'from-[#9B4E3F] to-[#7A3E32]',
       hoverColor: 'hover:from-[#B85E4F] hover:to-[#9B4E3F]',
+    },
+    {
+      id: 'tables-system',
+      title: 'Tables System',
+      description: 'Table map, reservations, and orders',
+      icon: Utensils,
+      href: '/dashboard/tables-system',
+      color: 'from-blue-600 to-blue-800',
+      hoverColor: 'hover:from-blue-700 hover:to-blue-900',
     },
     {
       id: 'kitchen',
