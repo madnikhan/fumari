@@ -79,7 +79,7 @@ export default function WaiterNotificationsPage() {
       const response = await fetch(`/api/buzzer/requests/${requestId}/acknowledge`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'acknowledged' }),
+        body: JSON.stringify({ action: 'acknowledge' }),
       });
 
       if (response.ok) {
@@ -100,7 +100,7 @@ export default function WaiterNotificationsPage() {
       const response = await fetch(`/api/buzzer/requests/${requestId}/acknowledge`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'completed' }),
+        body: JSON.stringify({ action: 'complete' }),
       });
 
       if (response.ok) {
