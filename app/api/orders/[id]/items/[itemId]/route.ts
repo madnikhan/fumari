@@ -38,10 +38,10 @@ export async function PUT(
 
     // Check if item exists
     const orderItem = await prisma.orderItem.findUnique({
-      where: { id: params.itemId },
+      where: { id: itemId },
     });
 
-    if (!orderItem || orderItem.orderId !== params.id) {
+    if (!orderItem || orderItem.orderId !== id) {
       return NextResponse.json(
         { error: 'Order item not found' },
         { status: 404 }
