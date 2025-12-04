@@ -57,12 +57,25 @@ export default function TableMapPage() {
   useEffect(() => {
     fetchTables();
     fetchReservations();
+    fetchStaff();
     const interval = setInterval(() => {
       fetchTables();
       fetchReservations();
     }, 5000); // Refresh every 5 seconds
     return () => clearInterval(interval);
   }, []);
+
+  const fetchStaff = async () => {
+    try {
+      const response = await fetch('/api/staff');
+      if (response.ok) {
+        const data = await response.json();
+        setStaff(Array.isArray(data) ? data.filter((s: Staff) => s.role === 'waiter' || s.role === 'server') : []);
+      }
+    } catch (error) {
+      console.error('Error fetching staff:', error);
+    }
+  };
 
   const fetchReservations = async () => {
     try {
