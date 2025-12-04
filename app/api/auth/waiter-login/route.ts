@@ -15,10 +15,10 @@ export async function POST(request: Request) {
     }
 
     // Find staff member by name and PIN
-    const staff = await prisma.staff.findFirst({
+    // Note: SQLite doesn't support 'mode: insensitive', so we'll search case-insensitively
+    // by converting both to lowercase for comparison
+    const allStaff = await prisma.staff.findMany({
       where: {
-        name: { contains: name, mode: 'insensitive' },
-        pin: pin,
         active: true,
       },
       select: {
@@ -26,10 +26,25 @@ export async function POST(request: Request) {
         name: true,
         email: true,
         role: true,
+        pin: true,
       },
     });
 
-    if (!staff) {
+    // Find matching staff (case-insensitive name match + exact PIN match)
+    const staff = allStaff.find(s => 
+      s.name.toLowerCase().includes(name.toLowerCase()) && 
+      s.pin === pin
+    );
+
+    // Remove PIN from result before returning
+    const staffResult = staff ? {
+      id: staff.id,
+      name: staff.name,
+      email: staff.email,
+      role: staff.role,
+    } : null;
+
+    if (!staffResult) {
       return NextResponse.json(
         { error: 'Invalid name or PIN' },
         { status: 401 }
@@ -38,10 +53,10 @@ export async function POST(request: Request) {
 
     // Create session data with Staff ID
     const sessionData = {
-      userId: staff.id, // Using Staff ID as userId for waiter sessions
-      username: staff.name,
-      role: staff.role,
-      staffId: staff.id, // Keep Staff ID separate
+      userId: staffResult.id, // Using Staff ID as userId for waiter sessions
+      username: staffResult.name,
+      role: staffResult.role,
+      staffId: staffResult.id, // Keep Staff ID separate
       expiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
     };
 
@@ -49,10 +64,10 @@ export async function POST(request: Request) {
     const response = NextResponse.json({
       success: true,
       staff: {
-        id: staff.id,
-        name: staff.name,
-        email: staff.email,
-        role: staff.role,
+        id: staffResult.id,
+        name: staffResult.name,
+        email: staffResult.email,
+        role: staffResult.role,
       },
     });
 
