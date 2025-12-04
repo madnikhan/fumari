@@ -165,8 +165,11 @@ function LoginForm() {
         {/* Default Credentials Info (for development) */}
         {process.env.NODE_ENV === 'development' && (
           <div className="mt-6 bg-[#2A2B2F] rounded-lg p-4 border-2 border-[#9B4E3F]">
+            <p className="text-xs text-[#E5E5E5] text-center mb-2">
+              Admin login: <span className="text-[#FFE176]">admin / admin123</span>
+            </p>
             <p className="text-xs text-[#E5E5E5] text-center">
-              Default credentials: <span className="text-[#FFE176]">admin / admin123</span>
+              Waiter login: <a href="/waiter-login" className="text-[#FFE176] underline">Go to Waiter Login</a> (Name + PIN)
             </p>
           </div>
         )}
