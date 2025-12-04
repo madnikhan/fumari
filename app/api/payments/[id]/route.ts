@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma-client';
 
+// Payment API routes - Next.js 16 async params
 // Get a single payment
 export async function GET(
   request: Request,
