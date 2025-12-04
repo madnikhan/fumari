@@ -104,21 +104,39 @@ export async function getSessionFromRequest(request: Request): Promise<{ userId:
       return null;
     }
     
-    // Verify user still exists and is active
+    // Check if this is a waiter session (Staff ID) or regular user session
+    // Try to find User first
     const user = await prisma.user.findUnique({
       where: { id: sessionData.userId },
       select: { id: true, username: true, role: true, active: true },
     });
     
-    if (!user || !user.active) {
-      return null;
+    if (user && user.active) {
+      // Regular user session
+      return {
+        userId: user.id,
+        username: user.username,
+        role: user.role,
+      };
     }
     
-    return {
-      userId: user.id,
-      username: user.username,
-      role: user.role,
-    };
+    // Check if it's a waiter session (Staff ID)
+    const staff = await prisma.staff.findUnique({
+      where: { id: sessionData.userId },
+      select: { id: true, name: true, role: true, active: true },
+    });
+    
+    if (staff && staff.active) {
+      // Waiter session
+      return {
+        userId: staff.id,
+        username: staff.name,
+        role: staff.role,
+      };
+    }
+    
+    // Neither user nor staff found, or inactive
+    return null;
   } catch (error) {
     console.error('Error getting session from request:', error);
     return null;

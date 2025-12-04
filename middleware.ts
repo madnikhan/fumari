@@ -8,6 +8,7 @@ export function middleware(request: NextRequest) {
   const publicRoutes = [
     '/',
     '/login',
+    '/waiter-login',
     '/accounting/login',
     '/kitchen/login',
     '/dashboard/kiosk',
@@ -30,6 +31,7 @@ export function middleware(request: NextRequest) {
     '/api/staff', // Kiosk needs staff for order assignment
     '/api/buzzer/table/', // Public access to table info via QR code
     '/api/buzzer/request', // Public access to create buzzer requests
+    '/api/auth/waiter-login', // Waiter PIN login
   ];
 
   // Check if route is public page

@@ -15,42 +15,57 @@ export async function GET(request: Request) {
       );
     }
 
-    // Find the Staff record for this User (match by email or username)
-    const user = await prisma.user.findUnique({
+    // Check if this is a waiter login (session.userId is Staff ID)
+    // For waiter login, session.userId directly contains the Staff ID
+    // For regular user login, we need to find the Staff record
+    
+    let staffId: string | null = null;
+
+    // Try to find Staff by ID first (waiter login)
+    const staffById = await prisma.staff.findUnique({
       where: { id: session.userId },
-      select: { email: true, username: true },
+      select: { id: true },
     });
 
-    if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
+    if (staffById) {
+      // This is a waiter login - session.userId is Staff ID
+      staffId = staffById.id;
+    } else {
+      // This is a regular user login - find Staff by email/name
+      const user = await prisma.user.findUnique({
+        where: { id: session.userId },
+        select: { email: true, username: true },
+      });
+
+      if (user) {
+        const staffByEmail = await prisma.staff.findFirst({
+          where: {
+            OR: [
+              { email: user.email },
+              { name: { contains: user.username, mode: 'insensitive' } },
+            ],
+            active: true,
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        if (staffByEmail) {
+          staffId = staffByEmail.id;
+        }
+      }
     }
 
-    // Find Staff member by email or name matching username
-    const staff = await prisma.staff.findFirst({
-      where: {
-        OR: [
-          { email: user.email },
-          { name: { contains: user.username, mode: 'insensitive' } },
-        ],
-        active: true,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!staff) {
-      // No staff record found for this user - return empty notifications
+    if (!staffId) {
+      // No staff record found - return empty notifications
       return NextResponse.json([]);
     }
 
     // Get waiter's assigned tables (tables where assignedWaiterId matches the Staff ID)
     const assignedTables = await prisma.table.findMany({
       where: {
-        assignedWaiterId: staff.id,
+        assignedWaiterId: staffId,
       },
       select: {
         id: true,
